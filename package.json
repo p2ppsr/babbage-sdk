@@ -1,0 +1,22 @@
+{
+  "name": "rubeus-js",
+  "version": "0.1.0",
+  "description": "JS Wrapper for Rubeus API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/p2ppsr/rubeus-js.git"
+  },
+  "author": "Peer-to-peer Privacy Systems Research, LLC",
+  "license": "Open BSV License",
+  "bugs": {
+    "url": "https://github.com/p2ppsr/rubeus-js/issues"
+  },
+  "homepage": "https://github.com/p2ppsr/rubeus-js#readme",
+  "dependencies": {
+    "isomorphic-fetch": "^3.0.0"
+  }
+}
