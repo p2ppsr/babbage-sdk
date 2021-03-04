@@ -37,7 +37,7 @@ apiFunctions.forEach(name => {
         if (key === 'data' && Array.isArray(value)) {
           value.forEach((el, i) => {
             if (el.constructor === Uint8Array) {
-              params.data[i] = btoa(String.fromCharCode.apply(null, el))
+              params.data[i] = String.fromCharCode.apply(null, el)
             }
           })
         }
