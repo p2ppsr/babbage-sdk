@@ -31,6 +31,16 @@ apiFunctions.forEach(name => {
             params[key] = btoa(String.fromCharCode.apply(null, value))
           }
         }
+        /*
+          Uint8Arrays inside the "data" property (i.e. sendDataTransaction) are also converted
+        */
+        if (key === 'data' && Array.isArray(value)) {
+          value.forEach((el, i) => {
+            if (el.constructor === Uint8Array) {
+              params.data[i] = btoa(String.fromCharCode.apply(null, el))
+            }
+          })
+        }
       })
     }
     const result = await fetch(
