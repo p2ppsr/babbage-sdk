@@ -1,7 +1,7 @@
 {
   "name": "rubeus-js",
-  "version": "0.1.4",
-  "description": "JS Wrapper for Rubeus API",
+  "version": "0.1.5",
+  "description": "Use Rubeus App Engine in your JavaScript projects",
   "main": "index.js",
   "repository": {
     "type": "git",
