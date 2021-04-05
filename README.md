@@ -4,7 +4,7 @@ Build Babbage apps in JavaScript
 
 **[API Documentation](https://github.com/p2ppsr/babbage-sdk/blob/master/API.md)**
 
-**[NPM Package](https://www.npmjs.com/package/babbage-sdk)**
+**[NPM Package](https://www.npmjs.com/package/@babbage/sdk)**
 
 ## Introduction
 
