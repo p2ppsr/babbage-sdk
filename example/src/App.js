@@ -1,8 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
-import Rubeus from 'rubeus-js'
+import Babbage from '@babbage/sdk'
 
-window.Rubeus = Rubeus
+window.Babbage = Babbage
 
 function App() {
   return (

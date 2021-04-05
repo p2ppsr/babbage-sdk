@@ -1,18 +1,18 @@
 {
-  "name": "rubeus-js",
-  "version": "0.1.5",
-  "description": "Use Rubeus App Engine in your JavaScript projects",
+  "name": "@babbage/sdk",
+  "version": "0.1.0",
+  "description": "Build Babbage Apps with JavaScript",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/p2ppsr/rubeus-js.git"
+    "url": "git+ssh://git@github.com/p2ppsr/babbage-sdk.git"
   },
   "author": "Peer-to-peer Privacy Systems Research, LLC",
   "license": "Open BSV License",
   "bugs": {
-    "url": "https://github.com/p2ppsr/rubeus-js/issues"
+    "url": "https://github.com/p2ppsr/babbage-sdk/issues"
   },
-  "homepage": "https://github.com/p2ppsr/rubeus-js#readme",
+  "homepage": "https://github.com/p2ppsr/babbage-sdk#readme",
   "dependencies": {
     "isomorphic-fetch": "^3.0.0"
   }
