@@ -6,6 +6,8 @@ Build Babbage apps in JavaScript
 
 **[NPM Package](https://www.npmjs.com/package/@babbage/sdk)**
 
+**[Hello World Guide](https://www.projectbabbage.com/hello-world)**
+
 ## Introduction
 
 This library provides a client-side authentication solution that will let your application access a few 

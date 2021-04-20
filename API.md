@@ -10,6 +10,7 @@ Note that for technical reasons, any function that claims to return a Uint8Array
 
 ### Table of Contents
 
+-   [createAction](#createaction)
 -   [createHmac](#createhmac)
 -   [createSignature](#createsignature)
 -   [getPrimarySigningPub](#getprimarysigningpub)
@@ -19,6 +20,29 @@ Note that for technical reasons, any function that claims to return a Uint8Array
 -   [isAuthenticated](#isauthenticated)
 -   [isInitialized](#isinitialized)
 -   [sendDataTransaction](#senddatatransaction)
+
+## createAction
+
+This function allows you to broadcast transactions to the BSV blockchain. It allows inputs to be created that are signed with the keys from the signing trees, or any other custom WIF key you may provide. R-puzzle is used to achieve valid input signatures.
+
+### Parameters
+
+-   `obj` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters for this function are provided in an object
+    -   `obj.outputs` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** The array of transaction outputs (amounts and scripts) that you want in the transaction. Each object contains "satoshis" and "script". (optional, default `[]`)
+    -   `obj.description` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The description of the Action being taken by this transaction.
+    -   `obj.senderWIF` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** The WIF string of a custom key to use for input signing. This will be used in place of keyName and keyPath if it is provided.
+    -   `obj.keyName` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The name of one of the signing key trees to use for input signing (valid options are "primarySigning" and "privilegedSigning"). (optional, default `primarySigning`)
+    -   `obj.keyPath` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The derivation path on the key tree for the key to use to sign inputs. (optional, default `m/1033/1`)
+    -   `obj.privilegedReason` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** The message to show when asking the user to authorize the use of their privileged key.
+    -   `obj.data` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)>** Optional. PUSHDATA fields to include in a first zero-value OP_RETURN output. If strings are base64 they will be efficiently encoded to save space. (optional, default `[]`)
+    -   `obj.originator`  
+    -   `obj._recursionCounter`   (optional, default `0`)
+    -   `obj._lastRecursionError`  
+
+
+-   Throws **InvalidStateError** Library not initialized or no user is currently authenticated.
+
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** An object containing "txid", "rawTransaction" and "inputProofs".
 
 ## createHmac
 
@@ -146,20 +170,17 @@ Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/
 
 ## sendDataTransaction
 
-This function allows you to broadcast transactions to the BSV blockchain. It allows inputs to be created that are signed with the keys from the signing trees, as well as any other custom key you may provide. R-puzzle is used to achieve valid input signatures.
-
-If more funds are needed in the user account, onPaymentRequired events are raised.
+[EPRECATED] sendDataTransaction helper. Allows creating OP_RETURN Actions. You should use createAction instead.
 
 ### Parameters
 
 -   `obj` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters for this function are provided in an object
     -   `obj.data` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)>** The array of PUSHDATA fields to include in the OP_RETURN output. If the string is base64 it will be efficiently encoded to save space.
-    -   `obj.reason` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Your reason for sending a transaction on behalf of this CWI user (optional, default `'A third party is requesting to send data on your behalf without providing a reason.'`)
+    -   `obj.reason` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Your reason for sending a transaction on behalf of this CWI user
     -   `obj.senderWIF` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** The WIF string of a custom key to use for input signing. This will be used in place of keyName and keyPath if it is provided.
     -   `obj.keyName` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The name of one of the signing key trees to use for input signing (valid options are "primarySigning" and "privilegedSigning"). (optional, default `primarySigning`)
     -   `obj.keyPath` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The derivation path on the key tree for the key to use to sign inputs (optional, default `m/1033/1`)
-    -   `obj._recursionCounter`   (optional, default `0`)
-    -   `obj._lastRecursionError`  
+    -   `obj.originator`  
 
 
 -   Throws **InvalidStateError** Library not initialized or no user is currently authenticated

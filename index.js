@@ -7,13 +7,12 @@ const apiFunctions = [
   'decrypt',
   'createSignature',
   'createHmac',
+  'createAction',
   'sendDataTransaction',
   'getVersion',
   'isAuthenticated',
   'waitForAuthentication',
   'ninja/getPaymail',
-  'ninja/getTransactionWithOutputs',
-  'ninja/processOutgoingTransaction',
   'ninja/getAvatar'
 ]
 
