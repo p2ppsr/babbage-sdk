@@ -27,7 +27,7 @@ apiFunctions.forEach(name => {
         if (typeof value !== 'undefined') {
           // Uint8Arrays need to be converted to strings.
           if (value.constructor === Uint8Array) {
-            params[key] = btoa(String.fromCharCode.apply(null, value))
+            params[key] = Buffer.from(value).toString('base64')
           }
         }
         /*
@@ -36,7 +36,7 @@ apiFunctions.forEach(name => {
         if (key === 'data' && Array.isArray(value)) {
           value.forEach((el, i) => {
             if (el.constructor === Uint8Array) {
-              params.data[i] = btoa(String.fromCharCode.apply(null, el))
+              params.data[i] = Buffer.from(el).toString('base64')
             }
           })
         }
