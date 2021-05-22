@@ -52,7 +52,10 @@ apiFunctions.forEach(name => {
         referrerPolicy: 'no-referrer',
         redirects: 'no-follow',
         cache: 'no-cache',
-        body: JSON.stringify({ params })
+        body: JSON.stringify({
+          params,
+          requestID: require('crypto').randomBytes(16).toString('base64')
+        })
       }
     )
     let parsedResult = await result.json()
