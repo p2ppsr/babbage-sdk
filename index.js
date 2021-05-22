@@ -17,7 +17,7 @@ const apiFunctions = [
 ]
 
 apiFunctions.forEach(name => {
-  const handler = async params => {
+  const handler = async (params, caching = true) => {
 
     /*
       Since the parameters are sent over HTTP, certain values must be converted.
@@ -42,6 +42,12 @@ apiFunctions.forEach(name => {
         }
       })
     }
+
+    const body = { params }
+    if (caching === false) {
+      body.requestID = require('crypto').randomBytes(16).toString('base64')
+    }
+
     const result = await fetch(
       `http://localhost:3301/v1/${name}`,
       {
@@ -52,10 +58,7 @@ apiFunctions.forEach(name => {
         referrerPolicy: 'no-referrer',
         redirects: 'no-follow',
         cache: 'no-cache',
-        body: JSON.stringify({
-          params,
-          requestID: require('crypto').randomBytes(16).toString('base64')
-        })
+        body: JSON.stringify(body)
       }
     )
     let parsedResult = await result.json()
