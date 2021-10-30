@@ -1,4 +1,7 @@
-const fetch = window.fetch || require('isomorphic-fetch')
+const fetch =
+  typeof window === 'object'
+    ? window.fetch
+    : require('isomorphic-fetch')
 const handlers = {}
 const apiFunctions = [
   'getPrimarySigningPub',
