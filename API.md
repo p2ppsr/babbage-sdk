@@ -10,16 +10,49 @@ Note that for technical reasons, any function that claims to return a Uint8Array
 
 ### Table of Contents
 
+*   [createAction](#createaction)
+*   [ninja](#ninja)
 *   [createHmac](#createhmac)
 *   [createSignature](#createsignature)
 *   [getPrimarySigningPub](#getprimarysigningpub)
 *   [getPrivilegedSigningPub](#getprivilegedsigningpub)
 *   [decrypt](#decrypt)
+*   [encrypt](#encrypt)
 *   [isAuthenticated](#isauthenticated)
 *   [isInitialized](#isinitialized)
-*   [createAction](#createaction)
-*   [encrypt](#encrypt)
 *   [sendDataTransaction](#senddatatransaction)
+
+## createAction
+
+This function allows you to broadcast transactions to the BSV blockchain. It allows inputs to be created that are signed with the keys from the signing trees, or any other custom WIF key you may provide. R-puzzle is used to achieve valid input signatures.
+
+### Parameters
+
+*   `params`  
+*   `obj` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters for this function are provided in an object
+
+    *   `obj.outputs` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** The array of transaction outputs (amounts and scripts) that you want in the transaction. Each object contains "satoshis" and "script".
+    *   `obj.description` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The description of the Action being taken by this transaction.
+    *   `obj.senderWIF` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** The WIF string of a custom key to use for input signing. This will be used in place of keyName and keyPath if it is provided.
+    *   `obj.keyName` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The name of one of the signing key trees to use for input signing (valid options are "primarySigning" and "privilegedSigning"). (optional, default `primarySigning`)
+    *   `obj.keyPath` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The derivation path on the key tree for the key to use to sign inputs. (optional, default `m/1033/1`)
+    *   `obj.privilegedReason` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** The message to show when asking the user to authorize the use of their privileged key.
+    *   `obj.data` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)<([String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | [Uint8Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array))>** Optional. PUSHDATA fields to include in a first zero-value OP_RETURN output. If strings are provided they must be encoded in base64. Generally you should provide a Uint8Array such as with `new TextEncoder().encode('hello')` (optional, default `[]`)
+    *   `obj.labels` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)<[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)>** Labels to apply to this Action. (optional, default `[]`)
+    *   `obj.bridges` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)<[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)>** Bridgeport bridges to notify about this Action. (optional, default `[]`)
+    *   `obj.inputs` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Input scripts to spend as part of this transaction. This is an object whose keys are TXIDs and whose values are Everett-style transaction envelopes that contain an additional field called `outputsToRedeen`. This is an array of objects, each containing `index` and `unlockingScript` properties. The `index` property is the output number in the transaction you are spending, and `unlockingScript` is the hex scriptcode that unlocks the satoshis. Note that you should create any signatures with `SIGHASH_NONE | ANYONECANPAY` or similar so that the additional Dojo outputs can be added afterward without invalidating your signature.
+
+<!---->
+
+*   Throws **InvalidStateError** Library not initialized or no user is currently authenticated.
+
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** An SPV envelope containing "txid", "rawTx" "mapiResponses" and "inputs".
+
+## ninja
+
+This is a wrapper around the implementation of [UTXO Ninja](https://github.com/p2ppsr/utxoninja) used by the CWI Framework.
+
+The documentation for this ninja object is the same as the documentation for the UTXO Ninja library. The only differences are that you do not provide the xprivKey or config objects to these functions, as those are automatically injected by this wrapper.
 
 ## createHmac
 
@@ -115,7 +148,7 @@ Decrypts data with a key belonging to the user. Also allows data to be decrypted
     *   `args.key` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Specify the key tree to use. Available key trees are `primaryKey`, `privilegedKey`, `primarySigning`, and `privilegedSigning`
     *   `args.path` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Specify the path on the given key tree to use.
     *   `args.pub` **([Uint8Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array) | [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))?** If using `primarySigning` or `privilegedSigning`, specify the foreign public key to use when deriving the ECDH shared secret. The data will be decrypted with the ECDH shared secret key between the user's private key and the given public key. Must be 65-byte decompressed value, if string must be base64
-    *   `args.returnType` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Specify the data type for the returned plaintext. Available types are `string` and `Uint8Array` (optional, default `string`)
+    *   `args.returnType` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Specify the data type for the returned plaintext. Available types are `string` (binary) and `Uint8Array` (optional, default `Uint8Array`)
     *   `args.reason` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** If using `privilegedKey` or `privilegedSigning`, specify the reason for performing this operation
     *   `args.sequence` **([Uint8Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array) | [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** The 32-byte sequence value for use when deriving ECDH shared secrets. Useful when deriving more than one shared secret between the same two public keys. If given as a string, must be base64 (optional, default `0`)
     *   `args.originator`  
@@ -126,44 +159,6 @@ Decrypts data with a key belonging to the user. Also allows data to be decrypted
 *   Throws **ValidationError** No foreign public key provided when using ECDH with `primarySigning` or `privilegedSigning`
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | [Uint8Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array))>** The decrypted plaintext
-
-## isAuthenticated
-
-Checks if a user is currently authenticated.
-
-Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Indicating whether a user is currently authenticated.
-
-## isInitialized
-
-Checks if the library is currently initialized.
-
-Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Indicating whether the library is currently initialized.
-
-## createAction
-
-This function allows you to broadcast transactions to the BSV blockchain. It allows inputs to be created that are signed with the keys from the signing trees, or any other custom WIF key you may provide. R-puzzle is used to achieve valid input signatures.
-
-### Parameters
-
-*   `obj` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters for this function are provided in an object
-
-    *   `obj.outputs` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** The array of transaction outputs (amounts and scripts) that you want in the transaction. Each object contains "satoshis" and "script". (optional, default `[]`)
-    *   `obj.description` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The description of the Action being taken by this transaction.
-    *   `obj.senderWIF` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** The WIF string of a custom key to use for input signing. This will be used in place of keyName and keyPath if it is provided.
-    *   `obj.keyName` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The name of one of the signing key trees to use for input signing (valid options are "primarySigning" and "privilegedSigning"). (optional, default `primarySigning`)
-    *   `obj.keyPath` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The derivation path on the key tree for the key to use to sign inputs. (optional, default `m/1033/1`)
-    *   `obj.privilegedReason` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** The message to show when asking the user to authorize the use of their privileged key.
-    *   `obj.data` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)<([String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | [Uint8Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array))>** Optional. PUSHDATA fields to include in a first zero-value OP_RETURN output. If strings are provided they must be encoded in base64. Generally you should provide a Uint8Array such as with `new TextEncoder().encode('hello')` (optional, default `[]`)
-    *   `obj.labels` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)<[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)>** Labels to apply to this Action. (optional, default `[]`)
-    *   `obj.originator`  
-    *   `obj._recursionCounter`   (optional, default `0`)
-    *   `obj._lastRecursionError`  
-
-<!---->
-
-*   Throws **InvalidStateError** Library not initialized or no user is currently authenticated.
-
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** An object containing "txid", "rawTransaction" and "inputProofs".
 
 ## encrypt
 
@@ -177,7 +172,7 @@ Encrypts data with a key belonging to the user. Also allows data to be encrypted
     *   `args.key` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Specify the key tree to use. Available key trees are `primaryKey`, `privilegedKey`, `primarySigning`, and `privilegedSigning`
     *   `args.path` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Specify the path on the given key tree to use.
     *   `args.pub` **([Uint8Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array) | [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))?** If using `primarySigning` or `privilegedSigning`, specify the foreign public key to use when deriving the ECDH shared secret. The data will be encrypted with the ECDH shared secret key between the user's private key and the given public key. Must be a 65-byte decompressed value, if given as a string then it must be base64
-    *   `args.returnType` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Specify the data type for the returned ciphertext. Available types are `string` and `Uint8Array` (optional, default `string`)
+    *   `args.returnType` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Specify the data type for the returned ciphertext. Available types are `string` (binary) and `Uint8Array` (optional, default `Uint8Array`)
     *   `args.reason` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** If using `privilegedKey` or `privilegedSigning`, specify the reason for performing this operation
     *   `args.sequence` **([Uint8Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array) | [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** The 32-byte sequence value for use when deriving ECDH shared secrets. Useful when deriving more than one shared secret between the same two public keys. If given as a string, must be base64 (optional, default `0`)
     *   `args.originator`  
@@ -188,6 +183,18 @@ Encrypts data with a key belonging to the user. Also allows data to be encrypted
 *   Throws **ValidationError** No foreign public key provided when using ECDH with `primarySigning` or `privilegedSigning`
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | [Uint8Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array))>** The encrypted ciphertext
+
+## isAuthenticated
+
+Checks if a user is currently authenticated.
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Indicating whether a user is currently authenticated.
+
+## isInitialized
+
+Checks if the library is currently initialized.
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Indicating whether the library is currently initialized.
 
 ## sendDataTransaction
 
@@ -202,6 +209,7 @@ Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/
     *   `obj.senderWIF` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** The WIF string of a custom key to use for input signing. This will be used in place of keyName and keyPath if it is provided.
     *   `obj.keyName` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The name of one of the signing key trees to use for input signing (valid options are "primarySigning" and "privilegedSigning"). (optional, default `primarySigning`)
     *   `obj.keyPath` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The derivation path on the key tree for the key to use to sign inputs (optional, default `m/1033/1`)
+    *   `obj.bridges` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** The Bridgeport bridges to notify about this Action.
     *   `obj.originator`  
 
 <!---->
