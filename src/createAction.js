@@ -2,7 +2,12 @@ const fetch =
   typeof window === 'object'
     ? window.fetch
     : require('isomorphic-fetch')
-module.exports = async ({inputs, outputs, bridges, labels}) => {
+module.exports = async ({
+  inputs, 
+  outputs, 
+  bridges, 
+  labels
+}) => {
   const result = await fetch(
      `http://localhost:3301/v1/createAction`,
     {

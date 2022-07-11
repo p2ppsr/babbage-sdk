@@ -1,9 +1,16 @@
-// TODO: Fix error with response
 const fetch =
   typeof window === 'object'
     ? window.fetch
     : require('isomorphic-fetch')
-module.exports = async (dataToVerify, hmac, protocolID, keyID, description = '', counterparty = 'self', privileged = false) => {
+module.exports = async ({
+  dataToVerify, 
+  hmac, 
+  protocolID, 
+  keyID, 
+  description = '', 
+  counterparty = 'self', 
+  privileged = false
+}) => {
   const result = await fetch(
     `http://localhost:3301/v1/verifyHmac?protocolID=${protocolID}&keyID=${keyID}&description=${description}&counterparty=${counterparty}&privileged=${privileged}&hmac=${hmac}`,
     {

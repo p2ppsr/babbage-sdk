@@ -2,7 +2,7 @@ const fetch =
   typeof window === 'object'
     ? window.fetch
     : require('isomorphic-fetch')
-module.exports = async () => { //protocolID, keyID, privileged = false, identityKey = false, reason = 'No reason provided.'
+module.exports = async () => {
   const result = await fetch(
      `http://localhost:3301/v1/waitForAuthentication`,
     {
