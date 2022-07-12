@@ -7,7 +7,7 @@ module.exports = async ({
   protocolID, 
   keyID, 
   description = '', 
-  counterparty = 'self', 
+  counterparty = 'self',
   privileged = false
 }) => {
   const result = await fetch(

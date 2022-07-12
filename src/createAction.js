@@ -5,13 +5,14 @@ const fetch =
 module.exports = async ({
   inputs, 
   outputs, 
+  description,
   bridges, 
   labels
 }) => {
   const result = await fetch(
      `http://localhost:3301/v1/createAction`,
     {
-      method: 'post',
+      method: 'POST',
       headers: {
         'Origin': 'http://localhost',
         'Content-Type': 'application/json'
@@ -19,6 +20,7 @@ module.exports = async ({
       body: JSON.stringify({
         inputs,
         outputs,
+        description,
         bridges,
         labels
       })

@@ -2,7 +2,7 @@
   "name": "@babbage/sdk",
   "version": "0.1.5",
   "description": "Build Babbage Apps with JavaScript",
-  "main": "index.js",
+  "main": "src/index.js",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/p2ppsr/babbage-sdk.git"
