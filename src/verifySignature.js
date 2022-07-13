@@ -9,10 +9,18 @@ module.exports = async ({
   keyID, 
   description = '', 
   counterparty = 'self', 
-  privileged = false
+  privileged = false,
+  reason = ''
 }) => {
   const result = await fetch(
-    `http://localhost:3301/v1/verifySignature?signature=${encodeURIComponent(signature)}&protocolID=${encodeURIComponent(protocolID)}&keyID=${encodeURIComponent(keyID)}&description=${encodeURIComponent(description)}&counterparty=${encodeURIComponent(counterparty)}&privileged=${encodeURIComponent(privileged)}`,
+    `http://localhost:3301/v1/verifySignature` + 
+    `?signature=${encodeURIComponent(signature)}` + 
+    `&protocolID=${encodeURIComponent(protocolID)}` + 
+    `&keyID=${encodeURIComponent(keyID)}` + 
+    `&description=${encodeURIComponent(description)}` + 
+    `&counterparty=${encodeURIComponent(counterparty)}` + 
+    `&privileged=${encodeURIComponent(privileged)}` + 
+    `&reason=${reason}`,
     {
       method: 'POST',
       headers: {

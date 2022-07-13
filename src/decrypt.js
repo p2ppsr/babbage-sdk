@@ -12,7 +12,13 @@ module.exports = async ({
   returnType = 'Uint8Array'
 }) => {
   const result = await fetch(
-     `http://localhost:3301/v1/decrypt?protocolID=${protocolID}&keyID=${keyID}&description=${description}&counterparty=${counterparty}&privileged=${privileged}&returnType=${returnType}`,
+     `http://localhost:3301/v1/decrypt` + 
+     `?protocolID=${protocolID}` + 
+     `&keyID=${keyID}` + 
+     `&description=${description}` + 
+     `&counterparty=${counterparty}` + 
+     `&privileged=${privileged}` + 
+     `&returnType=${returnType}`,
     {
       method: 'post',
       headers: {

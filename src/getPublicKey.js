@@ -10,7 +10,12 @@ module.exports = async ({
   reason = 'No reason provided.'
 }) => {
   const result = await fetch(
-     `http://localhost:3301/v1/publicKey?protocolID=${protocolID}&keyID=${keyID}&privileged=${privileged}&identityKey=${identityKey}&reason=${reason}`,
+     `http://localhost:3301/v1/publicKey` + 
+     `?protocolID=${protocolID}` + 
+     `&keyID=${keyID}` + 
+     `&privileged=${privileged}` + 
+     `&identityKey=${identityKey}` + 
+     `&reason=${reason}`,
     {
       method: 'get',
       headers: {

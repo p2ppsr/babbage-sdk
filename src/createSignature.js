@@ -7,11 +7,15 @@ module.exports = async ({
   protocolID, 
   keyID, 
   description = '', 
-  counterparty = 'anyone', 
+  counterparty = 'self', 
   privileged = false 
 }) => {
   const result = await fetch(
-    `http://localhost:3301/v1/createSignature?protocolID=${protocolID}&keyID=${keyID}&description=${description}&counterparty=${counterparty}&privileged=${privileged}`,
+    `http://localhost:3301/v1/createSignature` + 
+    `?protocolID=${protocolID}&keyID=${keyID}` + 
+    `&description=${description}` + 
+    `&counterparty=${counterparty}` + 
+    `&privileged=${privileged}`,
     {
       method: 'post',
       headers: {
