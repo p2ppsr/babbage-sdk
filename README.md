@@ -18,11 +18,9 @@ themselves remain the sole owners and custodians of the data they generate with 
 log in on a new device:
 
 Key Name            | Description
-\--------------------|-----------------------
+--------------------|-----------------------
 Primary Key         | Use this key for low-security symmetric cryptography
 Privileged Key      | Use this key for high-security symmetric cryptography
-Primary Signing     | Use this key for low-security asymmetric cryptography and ECDH with other users
-Privileged Signing  | Use this key for high-security asymmetric cryptography and ECDH with other users
 
 ### One Set of Keys per User
 
