@@ -18,7 +18,7 @@ const fetch =
  * @returns {Promise<Object>} An object indicating whether the signature was successfully verified.
  */
 module.exports = async ({
-  dataSigned, 
+  data, 
   signature, 
   protocolID, 
   keyID, 
@@ -48,7 +48,7 @@ module.exports = async ({
         'Origin': 'http://localhost',
         'Content-Type': 'application/octet-stream'
       },
-      body: dataSigned
+      body: data
     }
   )
   return result.json()
