@@ -76,12 +76,12 @@ const { encrypt, decrypt } = require('@babbage/sdk')
 
 // Encrypt and decrypt data using the BabbageSDK
 const encryptedData = await encrypt({
-    dataToEncrypt: Buffer.from('some data'),
+    plaintext: Buffer.from('some data'),
     protocolID: 'Hello World',
     keyID: '1',
   })
 const decryptedData = await decrypt({
-    dataToDecrypt: encryptedData,
+    ciphertext: encryptedData,
     protocolID: 'Hello World',
     keyID: '1',
     returnType: 'string'
