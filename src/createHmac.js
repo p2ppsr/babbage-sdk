@@ -11,7 +11,8 @@ module.exports = async ({
   privileged = false
 }) => {
   const result = await fetch(
-     `http://localhost:3301/v1/createHmac?protocolID=${protocolID}&keyID=${keyID}&description=${description}&counterparty=${counterparty}&privileged=${privileged}`,
+     `http://localhost:3301/v1/createHmac?protocolID=${encodeURIComponent(protocolID)}` +
+     `&keyID=${encodeURIComponent(keyID)}&description=${encodeURIComponent(description)}&counterparty=${encodeURIComponent(counterparty)}&privileged=${encodeURIComponent(privileged)}`,
     {
       method: 'post',
       headers: {
