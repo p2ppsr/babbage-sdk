@@ -12,7 +12,6 @@ const fetch =
  * @param {Uint8Array|string} [args.counterparty=self] If specified, the user with this identity key will also be able to verify the HMAC, as long as they specify the current user's identity key as their counterparty. Must be a hexadecimal string representing a 33-byte or 65-byte value, "self" or "anyone".
  * @param {string} [args.description] Describe the high-level operation being performed, so that the user can make an informed decision if permission is needed.
  * @param {string} [args.privileged=false] This indicates whether the privileged keyring should be used for the HMAC, as opposed to the primary keyring.
- * @param {string} args.originator The domain name of the application that is calling this function.
  *
  * @returns {Promise<Uint8Array>} The SHA-256 HMAC of the data.
  */

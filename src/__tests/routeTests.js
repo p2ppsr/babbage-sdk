@@ -41,7 +41,7 @@ const testAllRoutes = async () => {
     returnType: 'string'
   }))
   const signature = await BabbageSDK.createSignature({
-    data: Buffer.from('some data'),
+    data: Buffer.from('some data'), // Note: Also works as a base64 string
     protocolID: 'Hello World',
     keyID: '1'
   })
