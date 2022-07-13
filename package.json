@@ -9,11 +9,17 @@
   },
   "author": "Peer-to-peer Privacy Systems Research, LLC",
   "license": "Open BSV License",
+  "scripts": {
+    "doc": "documentation readme --section=API src/index.js"
+  },
   "bugs": {
     "url": "https://github.com/p2ppsr/babbage-sdk/issues"
   },
   "homepage": "https://github.com/p2ppsr/babbage-sdk#readme",
   "dependencies": {
     "isomorphic-fetch": "^3.0.0"
+  },
+  "devDependencies": {
+    "documentation": "^13.2.5"
   }
 }

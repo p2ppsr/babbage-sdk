@@ -16,38 +16,38 @@ const testAllRoutes = async () => {
   }))
   console.log('POST /v1/waitForAuthentication: ', await BabbageSDK.waitForAuthentication())
   const encryptResults = await BabbageSDK.encrypt({
-    dataToEncrypt: Buffer.from('some data'),
+    plaintext: Buffer.from('some data'),
     protocolID: 'Hello World',
     keyID: '1'
   })
   console.log('POST /v1/encrypt: ', encryptResults)
   console.log('POST /v1/decrypt: ', await BabbageSDK.decrypt({
-    dataToDecrypt: encryptResults,
+    ciphertext: encryptResults,
     protocolID: 'Hello World',
     keyID: '1',
     returnType: 'string'
   }))
   const hmacResults = await BabbageSDK.createHmac({
-    dataToHmac: Buffer.from('some data'),
+    data: Buffer.from('some data'),
     protocolID: 'Hello World',
     keyID: '1'
   })
   console.log('POST /v1/createHmac: ', hmacResults)
   console.log('POST /v1/verifyHmac: ', await BabbageSDK.verifyHmac({
-    dataToVerify: Buffer.from('some data'),
+    data: Buffer.from('some data'),
     hmac: Buffer.from(hmacResults).toString('base64'),
     protocolID: 'Hello World',
     keyID: '1',
     returnType: 'string'
   }))
   const signature = await BabbageSDK.createSignature({
-    dataToSign: Buffer.from('some data'),
+    data: Buffer.from('some data'),
     protocolID: 'Hello World',
     keyID: '1'
   })
   console.log('POST /v1/createSignature: ', signature)
   console.log('POST /v1/verifySignature: ', await BabbageSDK.verifySignature({
-    dataSigned: Buffer.from('some data'),
+    data: Buffer.from('some data'),
     signature: Buffer.from(signature).toString('base64'),
     protocolID: 'Hello World',
     keyID: '1'
