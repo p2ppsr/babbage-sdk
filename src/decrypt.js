@@ -28,6 +28,9 @@ module.exports = async ({
       body: dataToDecrypt
     }
   )
-  console.log(returnType)
-  return returnType === 'Uint8Array' ? result.arrayBuffer() : result.json()
+  if (result.status === 200 && returnType === 'Uint8Array') {
+    return result.arrayBuffer()
+  } else {
+    return result.json()
+  }
 }

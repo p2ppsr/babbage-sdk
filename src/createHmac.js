@@ -26,5 +26,9 @@ module.exports = async ({
       body: dataToHmac
     }
   )
-  return result.arrayBuffer()
+  if (result.status === 200) {
+    return result.arrayBuffer()
+  } else {
+    return result.json()
+  }
 }

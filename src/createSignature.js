@@ -25,5 +25,9 @@ module.exports = async ({
       body: dataToSign
     }
   )
-  return result.arrayBuffer()
+  if (result.status === 200) {
+    return result.arrayBuffer()
+  } else {
+    return result.json()
+  }
 }
