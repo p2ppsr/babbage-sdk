@@ -12,6 +12,12 @@ module.exports = async ({
   privileged = false,
   reason = ''
 }) => {
+  if (signature && typeof signature !== 'string') {
+    // Uint8Arrays need to be converted to strings.
+    if (signature.constructor === Uint8Array || signature.constructor === Buffer) {
+      signature = Buffer.from(signature).toString('base64')
+    }
+  }
   const result = await fetch(
     `http://localhost:3301/v1/verifySignature` + 
     `?signature=${encodeURIComponent(signature)}` + 

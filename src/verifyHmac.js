@@ -11,6 +11,12 @@ module.exports = async ({
   counterparty = 'self', 
   privileged = false
 }) => {
+  if (hmac && typeof hmac !== 'string') {
+    // Uint8Arrays need to be converted to strings.
+    if (hmac.constructor === Uint8Array || hmac.constructor === Buffer) {
+      hmac = Buffer.from(hmac).toString('base64')
+    }
+  }
   const result = await fetch(
     `http://localhost:3301/v1/verifyHmac` +
     `?protocolID=${protocolID}` +
