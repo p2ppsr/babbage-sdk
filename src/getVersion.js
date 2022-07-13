@@ -12,7 +12,6 @@ module.exports = async () => {
     {
       method: 'get',
       headers: {
-        'Origin': 'http://localhost',
         'Content-Type': 'application/json'
       },
     }

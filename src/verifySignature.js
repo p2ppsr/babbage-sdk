@@ -45,7 +45,6 @@ module.exports = async ({
     {
       method: 'POST',
       headers: {
-        'Origin': 'http://localhost',
         'Content-Type': 'application/octet-stream'
       },
       body: data

@@ -10,7 +10,6 @@ const fetch =
  * @param {string} obj.description A present-tense description of the user Action being facilitated or represented by this BitCoin transaction.
  * @param {Array<String>} [obj.bridges=[]] Bridgeport bridges to notify about this Action.
  * @param {Array<String>} [obj.labels=[]] Labels to apply to this Action.
- * @param {string} args.originator The domain name of the application that is calling this function.
  * @returns {Promise<Object>} An Action object containing "txid", "rawTx" "mapiResponses" and "inputs".
  */
 module.exports = async ({

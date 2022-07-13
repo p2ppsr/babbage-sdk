@@ -13,7 +13,6 @@ module.exports = async () => {
     {
       method: 'post',
       headers: {
-        'Origin': 'http://localhost',
         'Content-Type': 'application/json'
       },
     }
