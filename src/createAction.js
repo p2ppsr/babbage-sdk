@@ -25,7 +25,6 @@ module.exports = async ({
     {
       method: 'POST',
       headers: {
-        'Origin': 'http://localhost',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
