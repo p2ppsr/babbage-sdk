@@ -1,7 +1,4 @@
-const fetch =
-  typeof window === 'object'
-    ? window.fetch
-    : require('isomorphic-fetch')
+const makeHttpRequest = require('./utils/makeHttpRequest')
 
 /** Creates and broadcasts a BitCoin transaction with the provided inputs and outputs.
  * @param {Object} obj All parameters for this function are provided in an object
@@ -19,7 +16,7 @@ module.exports = async ({
   bridges, 
   labels
 }) => {
-  const result = await fetch(
+  const result = await makeHttpRequest(
      `http://localhost:3301/v1/createAction`,
     {
       method: 'POST',

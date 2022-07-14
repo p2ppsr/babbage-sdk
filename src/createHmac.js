@@ -1,7 +1,4 @@
-const fetch =
-  typeof window === 'object'
-    ? window.fetch
-    : require('isomorphic-fetch')
+const makeHttpRequest = require('./utils/makeHttpRequest')
 /**
  * Creates a SHA-256 HMAC with a key belonging to the user.
  *
@@ -23,7 +20,7 @@ module.exports = async ({
   counterparty = 'self',
   privileged = false
 }) => {
-  const result = await fetch(
+  const result = await makeHttpRequest(
      `http://localhost:3301/v1/createHmac` +
      `?protocolID=${encodeURIComponent(protocolID)}` +
      `&keyID=${encodeURIComponent(keyID)}` + 

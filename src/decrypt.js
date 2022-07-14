@@ -1,7 +1,4 @@
-const fetch =
-  typeof window === 'object'
-    ? window.fetch
-    : require('isomorphic-fetch')
+const makeHttpRequest = require('./utils/makeHttpRequest')
 /**
  * Decrypts data with a key belonging to the user. The same protocolID, keyID, counterparty and privileged parameters that were used during encryption must be used to successfully decrypt.
  *
@@ -25,7 +22,7 @@ module.exports = async ({
   privileged = false, 
   returnType = 'Uint8Array'
 }) => {
-  const result = await fetch(
+  const result = await makeHttpRequest(
      `http://localhost:3301/v1/decrypt` + 
      `?protocolID=${protocolID}` + 
      `&keyID=${keyID}` + 
