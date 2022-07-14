@@ -1,7 +1,4 @@
-const fetch =
-  typeof window === 'object'
-    ? window.fetch
-    : require('isomorphic-fetch')
+const makeHttpRequest = require('./utils/makeHttpRequest')
 /**
  * Creates a digital signature with a key belonging to the user. The SHA-256 hash of the data is used with ECDSA.
  *
@@ -25,7 +22,7 @@ module.exports = async ({
   counterparty = 'self', 
   privileged = false 
 }) => {
-  const result = await fetch(
+  const result = await makeHttpRequest(
     `http://localhost:3301/v1/createSignature` + 
     `?protocolID=${protocolID}&keyID=${keyID}` + 
     `&description=${description}` + 

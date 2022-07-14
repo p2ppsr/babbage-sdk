@@ -1,7 +1,4 @@
-const fetch =
-  typeof window === 'object'
-    ? window.fetch
-    : require('isomorphic-fetch')
+const makeHttpRequest = require('./utils/makeHttpRequest')
 /**
  * Verifies that a digital signature was created with a key belonging to the user.
  *
@@ -33,7 +30,7 @@ module.exports = async ({
       signature = Buffer.from(signature).toString('base64')
     }
   }
-  const result = await fetch(
+  const result = await makeHttpRequest(
     `http://localhost:3301/v1/verifySignature` + 
     `?signature=${encodeURIComponent(signature)}` + 
     `&protocolID=${encodeURIComponent(protocolID)}` + 

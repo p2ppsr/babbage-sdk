@@ -1,7 +1,4 @@
-const fetch =
-  typeof window === 'object'
-    ? window.fetch
-    : require('isomorphic-fetch')
+const makeHttpRequest = require('./utils/makeHttpRequest')
 /**
  * Returns the public key for the current user associated with the protocolID and keyID specified
  * 
@@ -21,7 +18,7 @@ module.exports = async ({
   identityKey = false, 
   reason = 'No reason provided.'
 }) => {
-  const result = await fetch(
+  const result = await makeHttpRequest(
      `http://localhost:3301/v1/publicKey` + 
      `?protocolID=${protocolID}` + 
      `&keyID=${keyID}` + 
