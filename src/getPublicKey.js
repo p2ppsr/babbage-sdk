@@ -20,11 +20,11 @@ module.exports = async ({
 }) => {
   const result = await makeHttpRequest(
      `http://localhost:3301/v1/publicKey` + 
-     `?protocolID=${protocolID}` + 
-     `&keyID=${keyID}` + 
-     `&privileged=${privileged}` + 
-     `&identityKey=${identityKey}` + 
-     `&reason=${reason}`,
+     `?protocolID=${encodeURIComponent(protocolID)}` + 
+     `&keyID=${encodeURIComponent(keyID)}` + 
+     `&privileged=${encodeURIComponent(privileged)}` + 
+     `&identityKey=${encodeURIComponent(identityKey)}` + 
+     `&reason=${encodeURIComponent(reason)}`,
     {
       method: 'get',
       headers: {

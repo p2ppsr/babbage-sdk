@@ -24,10 +24,11 @@ module.exports = async ({
 }) => {
   const result = await makeHttpRequest(
     `http://localhost:3301/v1/createSignature` + 
-    `?protocolID=${protocolID}&keyID=${keyID}` + 
-    `&description=${description}` + 
-    `&counterparty=${counterparty}` + 
-    `&privileged=${privileged}`,
+    `?protocolID=${encodeURIComponent(protocolID)}` + 
+    `&keyID=${encodeURIComponent(keyID)}` + 
+    `&description=${encodeURIComponent(description)}` + 
+    `&counterparty=${encodeURIComponent(counterparty)}` + 
+    `&privileged=${encodeURIComponent(privileged)}`,
     {
       method: 'post',
       headers: {

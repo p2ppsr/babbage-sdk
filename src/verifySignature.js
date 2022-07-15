@@ -38,7 +38,7 @@ module.exports = async ({
     `&description=${encodeURIComponent(description)}` + 
     `&counterparty=${encodeURIComponent(counterparty)}` + 
     `&privileged=${encodeURIComponent(privileged)}` + 
-    `&reason=${reason}`,
+    `&reason=${encodeURIComponent(reason)}`,
     {
       method: 'POST',
       headers: {
