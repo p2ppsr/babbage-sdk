@@ -13,22 +13,22 @@ const makeHttpRequest = require('./utils/makeHttpRequest')
  *
  * @returns {Promise<string|Uint8Array>} The decrypted plaintext.
  */
-module.exports = async ({ 
-  ciphertext, 
-  protocolID, 
-  keyID, 
-  description = '', 
-  counterparty = 'self', 
-  privileged = false, 
+module.exports = async ({
+  ciphertext,
+  protocolID,
+  keyID,
+  description = '',
+  counterparty = 'self',
+  privileged = false,
   returnType = 'Uint8Array'
 }) => {
   const result = await makeHttpRequest(
-     `http://localhost:3301/v1/decrypt` + 
-     `?protocolID=${encodeURIComponent(protocolID)}` + 
-     `&keyID=${encodeURIComponent(keyID)}` + 
-     `&description=${encodeURIComponent(description)}` + 
-     `&counterparty=${encodeURIComponent(counterparty)}` + 
-     `&privileged=${encodeURIComponent(privileged)}` + 
+    'http://localhost:3301/v1/decrypt' +
+     `?protocolID=${encodeURIComponent(protocolID)}` +
+     `&keyID=${encodeURIComponent(keyID)}` +
+     `&description=${encodeURIComponent(description)}` +
+     `&counterparty=${encodeURIComponent(counterparty)}` +
+     `&privileged=${encodeURIComponent(privileged)}` +
      `&returnType=${encodeURIComponent(returnType)}`,
     {
       method: 'post',

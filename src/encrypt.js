@@ -14,21 +14,21 @@ const makeHttpRequest = require('./utils/makeHttpRequest')
  * @returns {Promise<string|Uint8Array>} The encrypted ciphertext.
  */
 module.exports = async ({
-  plaintext, 
-  protocolID, 
-  keyID, 
-  description = '', 
-  counterparty = 'self', 
-  privileged = false, 
+  plaintext,
+  protocolID,
+  keyID,
+  description = '',
+  counterparty = 'self',
+  privileged = false,
   returnType = 'Uint8Array'
 }) => {
   const result = await makeHttpRequest(
-     `http://localhost:3301/v1/encrypt` + 
-     `?protocolID=${encodeURIComponent(protocolID)}` + 
-     `&keyID=${encodeURIComponent(keyID)}` + 
-     `&description=${encodeURIComponent(description)}` + 
-     `&counterparty=${encodeURIComponent(counterparty)}` + 
-     `&privileged=${encodeURIComponent(privileged)}` + 
+    'http://localhost:3301/v1/encrypt' +
+     `?protocolID=${encodeURIComponent(protocolID)}` +
+     `&keyID=${encodeURIComponent(keyID)}` +
+     `&description=${encodeURIComponent(description)}` +
+     `&counterparty=${encodeURIComponent(counterparty)}` +
+     `&privileged=${encodeURIComponent(privileged)}` +
      `&returnType=${encodeURIComponent(returnType)}`,
     {
       method: 'post',
