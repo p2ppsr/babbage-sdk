@@ -4,7 +4,7 @@ const makeHttpRequest = require('./utils/makeHttpRequest')
  *
  * @param {Object} args All parameters are passed in an object.
  * @param {Uint8Array|string} args.data The data to HMAC. If given as a string, it must be in base64 format.
- * @param {string} args.protocolID Specify an identifier for the protocol under which this operation is being performed.
+ * @param {Array|string} args.protocolID Specify an identifier for the protocol under which this operation is being performed.
  * @param {string} args.keyID An identifier for the message. During verification, the same message ID will be required. This can be used to prevent key re-use, even when the same user is using the same protocol to HMAC multiple messages.
  * @param {Uint8Array|string} [args.counterparty=self] If specified, the user with this identity key will also be able to verify the HMAC, as long as they specify the current user's identity key as their counterparty. Must be a hexadecimal string representing a 33-byte or 65-byte value, "self" or "anyone".
  * @param {string} [args.description] Describe the high-level operation being performed, so that the user can make an informed decision if permission is needed.

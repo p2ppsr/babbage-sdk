@@ -5,7 +5,7 @@ const makeHttpRequest = require('./utils/makeHttpRequest')
  * @param {Object} args All parameters are passed in an object.
  * @param {Uint8Array|string} args.data The data that was signed. If given as a string, it must be in base64 format.
  * @param {Uint8Array|string} args.signature The signature to verify, in the same format returned when it was created.
- * @param {string} args.protocolID Specify the identifier for the protocol under which the data was signed.
+ * @param {Array|string} args.protocolID Specify the identifier for the protocol under which the data was signed.
  * @param {string} args.keyID An identifier for the message that was signed. This should be the same message ID that was used when creating the signature.
  * @param {string} [args.description] Describe the high-level operation being performed, so that the user can make an informed decision if permission is needed.
  * @param {Uint8Array|string} [args.counterparty=self] If specified, allows verification where the user with this identity key has created the signature, as long as they had specified the current user's identity key as their counterparty during creation. Must be a hexadecimal string representing a 33-byte or 65-byte value or "self". Note that signatures created with counterparty = "anyone" are verifiable by anyone, and do not need user keys through the kernel.

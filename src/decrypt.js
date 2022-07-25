@@ -4,7 +4,7 @@ const makeHttpRequest = require('./utils/makeHttpRequest')
  *
  * @param {Object} args All parameters are passed in an object.
  * @param {string|Uint8Array} args.ciphertext The encrypted data to decipher. If given as a string, it must be in base64 format.
- * @param {string} args.protocolID Specify an identifier for the protocol under which this operation is being performed. It should be the same protocol ID used during encryption.
+ * @param {Array|string} args.protocolID Specify an identifier for the protocol under which this operation is being performed. It should be the same protocol ID used during encryption.
  * @param {string} args.keyID This should be the same message ID used during encryption.
  * @param {string} [args.description] Describe the high-level operation being performed, so that the user can make an informed decision if permission is needed.
  * @param {Uint8Array|string} [args.counterparty=self] If a foreign user used the local user's identity key as a counterparty when encrypting a message, specify the foreign user's identity key and the message can be decrypted. Must be a hexadecimal string representing a 33-byte or 65-byte value, "self" or "anyone".
