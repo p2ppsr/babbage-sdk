@@ -206,7 +206,7 @@ Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/
 
 ### getPublicKey
 
-Returns the public key for the current user associated with the protocolID and keyID specified
+Returns the public key. If identityKey is specified, returns the current user's identity key. If a counterparty is specified, derives a public key for the counterparty.
 
 #### Parameters
 
@@ -215,8 +215,9 @@ Returns the public key for the current user associated with the protocolID and k
     *   `args.protocolID` **([Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) | [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))?** Specify an identifier for the protocol under which this operation is being performed.
     *   `args.keyID` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** An identifier for retrieving the public key used. This can be used to prevent key re-use, even when the same user is using the same protocol to perform actions.
     *   `args.privileged` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** This indicates whether the privileged keyring should be used, as opposed to the primary keyring. (optional, default `false`)
-    *   `args.identityKey` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** If true, the identity key will be used as part of the derivation (optional, default `false`)
-    *   `args.reason` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The reason for requiring access to the user's privilegedKey (optional, default `'No reason provided'`)
+    *   `args.identityKey` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** If true, the identity key will be returned, and no key derivation will be performed (optional, default `false`)
+    *   `args.reason` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** The reason for requiring access to the user's privilegedKey (optional, default `'No reason provided.'`)
+    *   `args.counterparty` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The counterparty to use for derivation. If provided, derives a public key for this counterparty, who can derive the corresponding private key. (optional, default `self`)
     *   `args.description` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** Describe the high-level operation being performed, so that the user can make an informed decision if permission is needed.
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** An object containing the user's public key

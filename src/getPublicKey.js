@@ -1,14 +1,16 @@
 const makeHttpRequest = require('./utils/makeHttpRequest')
 /**
- * Returns the public key for the current user associated with the protocolID and keyID specified
+ * Returns the public key. If identityKey is specified, returns the current user's identity key. If a counterparty is specified, derives a public key for the counterparty.
  * 
  * @param {Object} args All parameters are passed in an object.
  * @param {Array|string} [args.protocolID] Specify an identifier for the protocol under which this operation is being performed.
  * @param {string} [args.keyID] An identifier for retrieving the public key used. This can be used to prevent key re-use, even when the same user is using the same protocol to perform actions.
  * @param {string} [args.description] Describe the high-level operation being performed, so that the user can make an informed decision if permission is needed.
  * @param {string} [args.privileged=false] This indicates whether the privileged keyring should be used, as opposed to the primary keyring.
- * @param {string} [args.identityKey=false] If true, the identity key will be used as part of the derivation
- * @param {string} [args.reason='No reason provided'] The reason for requiring access to the user's privilegedKey
+ * @param {string} [args.identityKey=false] If true, the identity key will be returned, and no key derivation will be performed
+ * @param {string} [args.reason] The reason for requiring access to the user's privilegedKey
+ * @param {string} [args.counterparty=self] The counterparty to use for derivation. If provided, derives a public key for this counterparty, who can derive the corresponding private key.
+ *
 * @returns {Promise<Object>} An object containing the user's public key
  */
 module.exports = async ({
@@ -16,15 +18,17 @@ module.exports = async ({
   keyID, 
   privileged = false, 
   identityKey = false, 
-  reason = 'No reason provided.'
+  reason = 'No reason provided.',
+  counterparty = 'self',
 }) => {
   const result = await makeHttpRequest(
-     `http://localhost:3301/v1/publicKey` + 
-     `?protocolID=${encodeURIComponent(protocolID)}` + 
-     `&keyID=${encodeURIComponent(keyID)}` + 
-     `&privileged=${encodeURIComponent(privileged)}` + 
-     `&identityKey=${encodeURIComponent(identityKey)}` + 
-     `&reason=${encodeURIComponent(reason)}`,
+    `http://localhost:3301/v1/publicKey` + 
+    `?protocolID=${encodeURIComponent(protocolID)}` + 
+    `&keyID=${encodeURIComponent(keyID)}` + 
+    `&privileged=${encodeURIComponent(privileged)}` + 
+    `&identityKey=${encodeURIComponent(identityKey)}` + 
+    `&counterparty=${encodeURIComponent(counterparty)}` + 
+    `&reason=${encodeURIComponent(reason)}`,
     {
       method: 'get',
       headers: {
