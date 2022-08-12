@@ -10,16 +10,16 @@ const makeHttpRequest = require('./utils/makeHttpRequest')
  * @param {string} [args.description] Describe the high-level operation being performed, so that the user can make an informed decision if permission is needed.
  * @param {Uint8Array|string} [args.counterparty=self] If specified, allows verification where the user with this identity key has created the HMAC, as long as they had specified the current user's identity key as their counterparty during creation. Must be a hexadecimal string representing a 33-byte or 65-byte value or "self". Note that signatures created with counterparty = "anyone" are verifiable by anyone, and do not need user keys through the kernel.
  * @param {string} [args.privileged=false] This indicates whether the privileged keyring was used for the HMAC, as opposed to the primary keyring.
- * 
+ *
  * @returns {Promise<Boolean>} Whether the HMAC has been erified.
  */
 module.exports = async ({
-  data, 
-  hmac, 
-  protocolID, 
-  keyID, 
-  description = '', 
-  counterparty = 'self', 
+  data,
+  hmac,
+  protocolID,
+  keyID,
+  description = '',
+  counterparty = 'self',
   privileged = false
 }) => {
   if (hmac && typeof hmac !== 'string') {
@@ -29,7 +29,7 @@ module.exports = async ({
     }
   }
   const result = await makeHttpRequest(
-    `http://localhost:3301/v1/verifyHmac` +
+    'http://localhost:3301/v1/verifyHmac' +
     `?protocolID=${encodeURIComponent(protocolID)}` +
     `&keyID=${encodeURIComponent(keyID)}` +
     `&description=${encodeURIComponent(description)}` +
@@ -44,5 +44,5 @@ module.exports = async ({
       body: data
     }
   )
-  return result.json()
+  return result
 }

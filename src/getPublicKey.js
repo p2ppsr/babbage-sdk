@@ -1,7 +1,7 @@
 const makeHttpRequest = require('./utils/makeHttpRequest')
 /**
  * Returns the public key. If identityKey is specified, returns the current user's identity key. If a counterparty is specified, derives a public key for the counterparty.
- * 
+ *
  * @param {Object} args All parameters are passed in an object.
  * @param {Array|string} [args.protocolID] Specify an identifier for the protocol under which this operation is being performed.
  * @param {string} [args.keyID] An identifier for retrieving the public key used. This can be used to prevent key re-use, even when the same user is using the same protocol to perform actions.
@@ -14,27 +14,27 @@ const makeHttpRequest = require('./utils/makeHttpRequest')
 * @returns {Promise<Object>} An object containing the user's public key
  */
 module.exports = async ({
-  protocolID, 
-  keyID, 
-  privileged = false, 
-  identityKey = false, 
+  protocolID,
+  keyID,
+  privileged = false,
+  identityKey = false,
   reason = 'No reason provided.',
-  counterparty = 'self',
+  counterparty = 'self'
 }) => {
   const result = await makeHttpRequest(
-    `http://localhost:3301/v1/publicKey` + 
-    `?protocolID=${encodeURIComponent(protocolID)}` + 
-    `&keyID=${encodeURIComponent(keyID)}` + 
-    `&privileged=${encodeURIComponent(privileged)}` + 
-    `&identityKey=${encodeURIComponent(identityKey)}` + 
-    `&counterparty=${encodeURIComponent(counterparty)}` + 
+    'http://localhost:3301/v1/publicKey' +
+    `?protocolID=${encodeURIComponent(protocolID)}` +
+    `&keyID=${encodeURIComponent(keyID)}` +
+    `&privileged=${encodeURIComponent(privileged)}` +
+    `&identityKey=${encodeURIComponent(identityKey)}` +
+    `&counterparty=${encodeURIComponent(counterparty)}` +
     `&reason=${encodeURIComponent(reason)}`,
     {
       method: 'get',
       headers: {
         'Content-Type': 'application/json'
-      },
+      }
     }
   )
-  return result.json()
+  return result
 }

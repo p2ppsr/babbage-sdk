@@ -10,14 +10,14 @@ const makeHttpRequest = require('./utils/makeHttpRequest')
  * @returns {Promise<Object>} An Action object containing "txid", "rawTx" "mapiResponses" and "inputs".
  */
 module.exports = async ({
-  inputs, 
-  outputs, 
+  inputs,
+  outputs,
   description,
-  bridges, 
+  bridges,
   labels
 }) => {
   const result = await makeHttpRequest(
-     `http://localhost:3301/v1/createAction`,
+    'http://localhost:3301/v1/createAction',
     {
       method: 'POST',
       headers: {
@@ -32,5 +32,5 @@ module.exports = async ({
       })
     }
   )
-  return result.json()
+  return result
 }

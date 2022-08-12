@@ -5,13 +5,13 @@ const makeHttpRequest = require('../utils/makeHttpRequest')
   */
 module.exports = async () => {
   const result = await makeHttpRequest(
-     `http://localhost:3301/v1/ninja/paymail`,
+    'http://localhost:3301/v1/ninja/paymail',
     {
       method: 'get',
       headers: {
         'Content-Type': 'application/json'
-      },
+      }
     }
   )
-  return result.json()
+  return result
 }

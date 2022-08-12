@@ -19,5 +19,17 @@ module.exports = async (
     routeURL,
     requestInput
   )
-  return response
+
+  // Determine the request success and response content type
+  if (response.headers.get('content-type') === 'application/octet-stream') {
+    // Success
+    return await response.arrayBuffer()
+  }
+  const parsedJSON = await response.json()
+  if (parsedJSON.status === 'error') {
+    const e = new Error(parsedJSON.description)
+    e.code = parsedJSON.code || 'ERR_BAD_REQUEST'
+    throw e
+  }
+  return parsedJSON.result
 }
