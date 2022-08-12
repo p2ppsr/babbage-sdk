@@ -35,6 +35,5 @@ module.exports = async ({
       body: data
     }
   )
-  // A Buffer is always returned unless there's an error which will then be returned from makeHttpRequest
   return result
 }

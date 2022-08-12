@@ -38,9 +38,5 @@ module.exports = async ({
       body: ciphertext
     }
   )
-  if (returnType === 'string' && result.constructor.name !== 'Error') {
-    return JSON.parse(Buffer.from(result).toString()).result
-  } else {
-    return result
-  }
+  return result
 }

@@ -21,10 +21,20 @@ module.exports = async (
   )
 
   // Get the results and determine if an error was returned
-  const responseBuffer = await response.arrayBuffer()
+  const responseAsBuffer = Buffer.from(await response.arrayBuffer())
   if (response.status !== 200) {
-    return new Error(JSON.parse(Buffer.from(responseBuffer).toString()).message)
+    // Error
+    throw new Error(JSON.parse(Buffer.from(responseAsBuffer).toString()).message)
   } else {
-    return responseBuffer
+    // Success
+    // Determine the type of data requested
+    try {
+      // Check for valid JSON data to return
+      const jsonData = JSON.parse(Buffer.from(responseAsBuffer).toString()).result
+      return jsonData
+    } catch (error) {
+      // Data as a Buffer returned
+      return responseAsBuffer
+    }
   }
 }

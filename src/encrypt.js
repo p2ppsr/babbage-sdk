@@ -25,12 +25,12 @@ module.exports = async ({
 }) => {
   const result = await makeHttpRequest(
     'http://localhost:3301/v1/encrypt' +
-     `?protocolID=${encodeURIComponent(protocolID)}` +
-     `&keyID=${encodeURIComponent(keyID)}` +
-     `&description=${encodeURIComponent(description)}` +
-     `&counterparty=${encodeURIComponent(counterparty)}` +
-     `&privileged=${encodeURIComponent(privileged)}` +
-     `&returnType=${encodeURIComponent(returnType)}`,
+       `?protocolID=${encodeURIComponent(protocolID)}` +
+       `&keyID=${encodeURIComponent(keyID)}` +
+       `&description=${encodeURIComponent(description)}` +
+       `&counterparty=${encodeURIComponent(counterparty)}` +
+       `&privileged=${encodeURIComponent(privileged)}` +
+       `&returnType=${encodeURIComponent(returnType)}`,
     {
       method: 'post',
       headers: {
@@ -39,9 +39,5 @@ module.exports = async ({
       body: plaintext
     }
   )
-  if (returnType === 'string' && result.constructor.name !== 'Error') {
-    return JSON.parse(Buffer.from(result).toString()).result
-  } else {
-    return result
-  }
+  return result
 }

@@ -36,10 +36,5 @@ module.exports = async ({
       }
     }
   )
-  // Make sure we always return a string unless there's an error
-  if (result.constructor.name !== 'Error') {
-    return JSON.parse(Buffer.from(result).toString()).result
-  } else {
-    return result
-  }
+  return result
 }
