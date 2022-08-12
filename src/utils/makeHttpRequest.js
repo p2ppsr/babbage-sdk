@@ -20,21 +20,16 @@ module.exports = async (
     requestInput
   )
 
-  // Get the results and determine if an error was returned
-  const responseAsBuffer = Buffer.from(await response.arrayBuffer())
-  if (response.status !== 200) {
-    // Error
-    throw new Error(JSON.parse(responseAsBuffer.toString()).message)
-  } else {
+  // Determine the request success and response content type
+  if (response.headers.get('content-type') === 'application/octet-stream') {
     // Success
-    // Determine the type of data requested
-    try {
-      // Check for valid JSON data to return
-      const jsonData = JSON.parse(responseAsBuffer.toString()).result
-      return jsonData
-    } catch (error) {
-      // Data as a Buffer returned
-      return responseAsBuffer
-    }
+    return await response.arrayBuffer()
   }
+  const parsedJSON = await response.json()
+  if (parsedJSON.status === 'error') {
+    const e = new Error(parsedJSON.message)
+    e.code = 'ERR_BAD_DATA'
+    throw e
+  }
+  return parsedJSON.result
 }
