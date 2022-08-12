@@ -1,5 +1,5 @@
 const BabbageSDK = require('../index')
-// To run tests, run the following command: node routeTests.js
+// To run tests, run the following command: node successTests.js
 const successTests = async () => {
   // TEST GET Requests
   console.log('GET Requests: ')
