@@ -15,12 +15,12 @@ const makeHttpRequest = require('./utils/makeHttpRequest')
  * @returns {Promise<Object>} An object indicating whether the signature was successfully verified.
  */
 module.exports = async ({
-  data, 
-  signature, 
-  protocolID, 
-  keyID, 
-  description = '', 
-  counterparty = 'self', 
+  data,
+  signature,
+  protocolID,
+  keyID,
+  description = '',
+  counterparty = 'self',
   privileged = false,
   reason = ''
 }) => {
@@ -31,13 +31,13 @@ module.exports = async ({
     }
   }
   const result = await makeHttpRequest(
-    `http://localhost:3301/v1/verifySignature` + 
-    `?signature=${encodeURIComponent(signature)}` + 
-    `&protocolID=${encodeURIComponent(protocolID)}` + 
-    `&keyID=${encodeURIComponent(keyID)}` + 
-    `&description=${encodeURIComponent(description)}` + 
-    `&counterparty=${encodeURIComponent(counterparty)}` + 
-    `&privileged=${encodeURIComponent(privileged)}` + 
+    'http://localhost:3301/v1/verifySignature' +
+    `?signature=${encodeURIComponent(signature)}` +
+    `&protocolID=${encodeURIComponent(protocolID)}` +
+    `&keyID=${encodeURIComponent(keyID)}` +
+    `&description=${encodeURIComponent(description)}` +
+    `&counterparty=${encodeURIComponent(counterparty)}` +
+    `&privileged=${encodeURIComponent(privileged)}` +
     `&reason=${encodeURIComponent(reason)}`,
     {
       method: 'POST',
@@ -47,5 +47,10 @@ module.exports = async ({
       body: data
     }
   )
-  return result.json()
+  // Make sure we always return a string unless there's an error
+  if (result.constructor.name !== 'Error') {
+    return JSON.parse(Buffer.from(result).toString()).result
+  } else {
+    return result
+  }
 }

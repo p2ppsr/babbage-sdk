@@ -13,19 +13,19 @@ const makeHttpRequest = require('./utils/makeHttpRequest')
  * @returns {Promise<Uint8Array>} The SHA-256 HMAC of the data.
  */
 module.exports = async ({
-  data, 
-  protocolID, 
-  keyID, 
-  description = '', 
+  data,
+  protocolID,
+  keyID,
+  description = '',
   counterparty = 'self',
   privileged = false
 }) => {
   const result = await makeHttpRequest(
-     `http://localhost:3301/v1/createHmac` +
+    'http://localhost:3301/v1/createHmac' +
      `?protocolID=${encodeURIComponent(protocolID)}` +
-     `&keyID=${encodeURIComponent(keyID)}` + 
+     `&keyID=${encodeURIComponent(keyID)}` +
      `&description=${encodeURIComponent(description)}` +
-     `&counterparty=${encodeURIComponent(counterparty)}` + 
+     `&counterparty=${encodeURIComponent(counterparty)}` +
      `&privileged=${encodeURIComponent(privileged)}`,
     {
       method: 'post',
@@ -35,9 +35,6 @@ module.exports = async ({
       body: data
     }
   )
-  if (result.status === 200) {
-    return result.arrayBuffer()
-  } else {
-    return result.json()
-  }
+  // A Buffer is always returned unless there's an error which will then be returned from makeHttpRequest
+  return result
 }

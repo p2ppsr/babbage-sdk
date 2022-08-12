@@ -19,5 +19,12 @@ module.exports = async (
     routeURL,
     requestInput
   )
-  return response
+
+  // Get the results and determine if an error was returned
+  const responseBuffer = await response.arrayBuffer()
+  if (response.status !== 200) {
+    return new Error(JSON.parse(Buffer.from(responseBuffer).toString()).message)
+  } else {
+    return responseBuffer
+  }
 }
