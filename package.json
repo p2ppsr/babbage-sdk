@@ -10,7 +10,9 @@
   "author": "Peer-to-peer Privacy Systems Research, LLC",
   "license": "Open BSV License",
   "scripts": {
-    "doc": "documentation readme --section=API src/index.js"
+    "doc": "documentation readme --section=API src/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "bugs": {
     "url": "https://github.com/p2ppsr/babbage-sdk/issues"
@@ -21,6 +23,7 @@
     "isomorphic-fetch": "^3.0.0"
   },
   "devDependencies": {
-    "documentation": "^13.2.5"
+    "documentation": "^13.2.5",
+    "jest": "^28.1.3"
   }
 }

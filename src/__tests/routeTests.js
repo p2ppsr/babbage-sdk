@@ -1,6 +1,6 @@
 const BabbageSDK = require('../index')
 // To run tests, run the following command: node routeTests.js
-const testAllRoutes = async () => {
+const successTests = async () => {
   // TEST GET Requests
   console.log('GET Requests: ')
   console.log('GET /v1/version: ', await BabbageSDK.getVersion())
@@ -53,4 +53,4 @@ const testAllRoutes = async () => {
     keyID: '1'
   }))
 }
-testAllRoutes()
+successTests()

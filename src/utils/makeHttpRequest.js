@@ -28,7 +28,7 @@ module.exports = async (
   const parsedJSON = await response.json()
   if (parsedJSON.status === 'error') {
     const e = new Error(parsedJSON.description)
-    e.code = !e.code ? 'ERR_BAD_REQUEST' : e.code
+    e.code = parsedJSON.code || 'ERR_BAD_REQUEST'
     throw e
   }
   return parsedJSON.result
