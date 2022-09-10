@@ -14,10 +14,10 @@ module.exports = async (certifiers, types) => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: {
+      body: JSON.stringify({
         certifiers,
         types
-      }
+      })
     }
   )
   return result
