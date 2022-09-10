@@ -10,7 +10,7 @@ module.exports = async (certifiers, types) => {
   const result = await makeHttpRequest(
     'http://localhost:3301/v1/ninja/findCertificates',
     {
-      method: 'get',
+      method: 'post',
       headers: {
         'Content-Type': 'application/json'
       },
