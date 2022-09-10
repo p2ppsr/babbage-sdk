@@ -1,4 +1,4 @@
-const makeHttpRequest = require('../utils/makeHttpRequest')
+const makeHttpRequest = require('./utils/makeHttpRequest')
 
 /**
  * Returns found certificates

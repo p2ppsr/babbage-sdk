@@ -10,6 +10,5 @@ module.exports = {
   verifyHmac: require('./verifyHmac'),
   verifySignature: require('./verifySignature'),
   waitForAuthentication: require('./waitForAuthentication'),
-  getAvatar: require('./ninja/getAvatar'),
-  getPaymail: require('./ninja/getPaymail')
+  getCertificates: require('./getCertificates')
 }

@@ -113,8 +113,8 @@ const decryptedData = await decrypt({
 *   [verifySignature](#verifysignature)
     *   [Parameters](#parameters-7)
 *   [waitForAuthentication](#waitforauthentication)
-*   [getAvatar](#getavatar)
-*   [getPaymail](#getpaymail)
+*   [getCertificates](#getcertificates)
+    *   [Parameters](#parameters-8)
 
 ### createAction
 
@@ -277,17 +277,16 @@ Waits for a user to be authenticated.
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** An object containing a boolean indicating that a user is authenticated
 
-### getAvatar
+### getCertificates
 
-Returns the name and photo URL of the user
+Returns found certificates
 
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** An object containing the name and a HTTPS or UHRP URL to a photo of the user
+#### Parameters
 
-### getPaymail
+*   `certifiers` **any** The certifiers to filter certificates by
+*   `types` **any** The certificate types to filter certificates by
 
-Returns the current user's Paymail handle
-
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)>** The Paymail handle
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** An object containing the found certificates
 
 ## License
 
