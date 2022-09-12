@@ -8,58 +8,75 @@ module.exports = async (
   routeURL,
   requestInput = {}
 ) => {
-  // If we're in a node environment, we need to inject the Orign header
-  if (isNode) {
-    requestInput.headers = {
-      ...requestInput.headers,
-      Origin: 'http://localhost'
+  const withTimedout = (millis, promise) => {
+    const timeout = new Promise((resolve, reject) =>
+      setTimeout(() => 
+        reject(`Timed out after ${millis} ms.`),
+        millis
+      )
+    )
+    return Promise.race([
+      promise,
+      timeout
+    ])
+  }
+
+  try {
+    let substrate
+    const kernelVersion = await withTimedout(200, getXdmKernelVersion()) //Prosperity Client App’s runCommand
+    if (kernelVersion && !kernelVersion.startsWith('0.3.')){
+      const e = new Error(`Error in XDM kernel version ${kernelVersion}`)
+      e.code = ERR_XDM_INCOMPATIBLE_KERNEL
+      throw e
+    } else {
+      substrate = 'babbage-xdm'
+
     }
-  }
-  const response = await fetch(
-    routeURL,
-    requestInput
-  )
+    let success = false
+    const res = await fetch(
+      'http://localhost:3301/getKernelVersion',
+    )
+    if(res.code === 200){
+      success = true
+      kernelVersion = res.message
+      if (kernelVerson && !kernelVerson.startsWith('0.3.')){
+        const e = new Error(`Error in Desktop kernel version ${kernelVersion}`)
+        e.code = ERR_DESKTOP_INCOMPATIBLE_KERNEL
+        throw e
+      }
+      substrate = 'cicada-api'
 
-  // Determine the request success and response content type
-  if (response.headers.get('content-type') === 'application/octet-stream') {
-    // Success
-    return await response.arrayBuffer()
-  }
-  const parsedJSON = await response.json()
-  if (parsedJSON.status === 'error') {
-    const e = new Error(parsedJSON.description)
-    e.code = parsedJSON.code || 'ERR_BAD_REQUEST'
+      // If we're in a node environment, we need to inject the Orign header
+      if (isNode) {
+        requestInput.headers = {
+          ...requestInput.headers,
+          Origin: 'http://localhost'
+        }
+      }
+      const response = await fetch(
+        routeURL,
+        requestInput
+      )
+
+      // Determine the request success and response content type
+      if (response.headers.get('content-type') === 'application/octet-stream') {
+        // Success
+        return await response.arrayBuffer()
+      }
+      const parsedJSON = await response.json()
+      if (parsedJSON.status === 'error') {
+        const e = new Error(parsedJSON.description)
+        e.code = parsedJSON.code || 'ERR_BAD_REQUEST'
+        throw e
+      }
+      return parsedJSON.result
+    }
+  } catch(e){
+    console.log(e)
     throw e
   }
-  return parsedJSON.result
 }
-
-/*
-
-
-
-Business / User Value
-As a Babbage app developer, I want my app to work across various deployment contexts, so that I can reach as many Babbage users as possible without changing my code.
-
-Acceptance Criteria
- send an XDM message, 
- getVersion, and receive a response Prosperity Client App’s runCommand
-try {
-  let substrate
-  const kernelVerson = runCommand('get-version')
-  if (!kernelVerson.startsWith('0.3.')){
-    const e = new Error(`Error in XDM kernel version ${kernelVersion}`)
-    e.code = ERR_XDM_INCOMPATIBLE_KERNEL
-    throw e
-  }
-  substrate = 'babbage-xdm'
-
-} catch(e){
-  console.error(e)
-}
-
-If no response is received to the XDM call within 200 ms, the Communicator proceeds to the next phase
-
+  /*
 The communicator then sends out a getVersion request to the Port 3301 API (see current Babbage SDK code for an example of this request).
 
 If a response is received, and if the kernel is 0.3.x, then the Communicator assigns cicada-api to the substrate global.
@@ -96,3 +113,4 @@ Developer Notes
 The Communicator, similar to something like Bridgeport-API-Client’s createSignedRequest, is something that all the SDK API Functions call, with their parameters. Currently, it takes the form of the SDK makeHttpRequest util, but this new functionality will enable the SDK to be used over more than just HTTP.
 
 Future substrates, for iOS and Android communication protocols that bind between native app code and WebViews, will be implemented trivially after the system works within Prosperity Desktop.
+*/
