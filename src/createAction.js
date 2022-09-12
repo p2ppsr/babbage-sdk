@@ -1,4 +1,4 @@
-const makeHttpRequest = require('./utils/makeHttpRequest')
+const communicator = require('./utils/communicator')
 
 /** Creates and broadcasts a BitCoin transaction with the provided inputs and outputs.
  * @param {Object} obj All parameters for this function are provided in an object
@@ -16,7 +16,7 @@ module.exports = async ({
   bridges,
   labels
 }) => {
-  const result = await makeHttpRequest(
+  const result = await communicator(
     'http://localhost:3301/v1/createAction',
     {
       method: 'POST',

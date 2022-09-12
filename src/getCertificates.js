@@ -1,4 +1,4 @@
-const makeHttpRequest = require('./utils/makeHttpRequest')
+const communicator = require('./utils/communicator')
 
 /**
  * Returns found certificates
@@ -7,7 +7,7 @@ const makeHttpRequest = require('./utils/makeHttpRequest')
  * @returns {Promise<Object>} An object containing the found certificates
  */
 module.exports = async (certifiers, types) => {
-  const result = await makeHttpRequest(
+  const result = await communicator(
     'http://localhost:3301/v1/ninja/findCertificates',
     {
       method: 'post',

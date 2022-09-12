@@ -1,4 +1,4 @@
-const makeHttpRequest = require('./utils/makeHttpRequest')
+const communicator = require('./utils/communicator')
 /**
  * Decrypts data with a key belonging to the user. The same protocolID, keyID, counterparty and privileged parameters that were used during encryption must be used to successfully decrypt.
  *
@@ -22,7 +22,7 @@ module.exports = async ({
   privileged = false,
   returnType = 'Uint8Array'
 }) => {
-  const result = await makeHttpRequest(
+  const result = await communicator(
     'http://localhost:3301/v1/decrypt' +
      `?protocolID=${encodeURIComponent(protocolID)}` +
      `&keyID=${encodeURIComponent(keyID)}` +

@@ -1,4 +1,4 @@
-const makeHttpRequest = require('./utils/makeHttpRequest')
+const communicator = require('./utils/communicator')
 /**
  * Verifies that a digital signature was created with a key belonging to the user.
  *
@@ -30,7 +30,7 @@ module.exports = async ({
       signature = Buffer.from(signature).toString('base64')
     }
   }
-  const result = await makeHttpRequest(
+  const result = await communicator(
     'http://localhost:3301/v1/verifySignature' +
     `?signature=${encodeURIComponent(signature)}` +
     `&protocolID=${encodeURIComponent(protocolID)}` +

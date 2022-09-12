@@ -1,4 +1,4 @@
-const makeHttpRequest = require('./utils/makeHttpRequest')
+const communicator = require('./utils/communicator')
 /**
  * Returns the public key. If identityKey is specified, returns the current user's identity key. If a counterparty is specified, derives a public key for the counterparty.
  *
@@ -21,7 +21,7 @@ module.exports = async ({
   reason = 'No reason provided.',
   counterparty = 'self'
 }) => {
-  const result = await makeHttpRequest(
+  const result = await communicator(
     'http://localhost:3301/v1/publicKey' +
     `?protocolID=${encodeURIComponent(protocolID)}` +
     `&keyID=${encodeURIComponent(keyID)}` +

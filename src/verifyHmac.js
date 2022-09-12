@@ -1,4 +1,4 @@
-const makeHttpRequest = require('./utils/makeHttpRequest')
+const communicator = require('./utils/communicator')
 /**
  * Verifies that a SHA-256 HMAC was created with a key that belongs to the user.
  *
@@ -28,7 +28,7 @@ module.exports = async ({
       hmac = Buffer.from(hmac).toString('base64')
     }
   }
-  const result = await makeHttpRequest(
+  const result = await communicator(
     'http://localhost:3301/v1/verifyHmac' +
     `?protocolID=${encodeURIComponent(protocolID)}` +
     `&keyID=${encodeURIComponent(keyID)}` +
