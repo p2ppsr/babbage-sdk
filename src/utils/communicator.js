@@ -5,6 +5,7 @@ global.substrate = undefined
 module.exports = async (
 ) => {
   try {
+    // TODO need to use messageHandler()
     let kernelVersion
     console.log('typeof window:', typeof window)
     console.log('typeof window.CWI:', typeof window.CWI)

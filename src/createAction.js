@@ -17,38 +17,49 @@ module.exports = async ({
   bridges,
   labels
 }) => {
-  await communicator()
-  if(global.substrate === 'cicada-api') {
-    const httpResult = await makeHttpRequest(
-      'http://localhost:3301/v1/createAction',
-      {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          inputs,
-          outputs,
-          description,
-          bridges,
-          labels
-        })
-      }
-    )
-    return httpResult
-  }
-  if(global.substrate === 'babbage-xdm') {
-    const createAction = async () => {
-      const xdmResult = await window.CWI.createAction({
-        inputs,
-        outputs,
-        description,
-        bridges,
-        labels
-      })
-      console.log(xdmResult)
-      return xdmResult
+  try {
+    await communicator()
+    if(global.substrate === 'cicada-api') {
+      const httpResult = await makeHttpRequest(
+        'http://localhost:3301/v1/createAction',
+        {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            inputs,
+            outputs,
+            description,
+            bridges,
+            labels
+          })
+        }
+      )
+      return httpResult
     }
-    createAction()
+    if(global.substrate === 'babbage-xdm') {
+      const ids = {}
+      return new Promise(resolve => {
+        window.parent.postMessage({
+          type: 'CWI',
+          id: Buffer.from(require('crypto').randomBytes(8)).toString('base64'),
+          call: 'createAction',
+          params:{
+            inputs,
+            outputs,
+            description,
+            bridges,
+            labels
+          }
+        }, '*')
+        ids[id] = result => {
+          resolve(result)
+          delete ids[id]
+        }
+      })
+    }
+  } catch (e) {
+    console.error(e)
   }
 }
