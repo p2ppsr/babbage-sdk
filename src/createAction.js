@@ -17,8 +17,8 @@ module.exports = async ({
   bridges,
   labels
 }) => {
-  const substrate = await communicator()
-  if(substrate == 'cicada-api') {
+  await communicator()
+  if(global.substrate === 'cicada-api') {
     const httpResult = await makeHttpRequest(
       'http://localhost:3301/v1/createAction',
       {
@@ -36,5 +36,19 @@ module.exports = async ({
       }
     )
     return httpResult
+  }
+  if(global.substrate === 'babbage-xdm') {
+    const createAction = async () => {
+      const xdmResult = await window.CWI.createAction({
+        inputs,
+        outputs,
+        description,
+        bridges,
+        labels
+      })
+      console.log(xdmResult)
+      return xdmResult
+    }
+    createAction()
   }
 }

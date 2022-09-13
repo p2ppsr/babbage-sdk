@@ -6,8 +6,8 @@ const makeHttpRequest = require('./utils/makeHttpRequest')
  * @returns {Promise<Object>} An object containing a boolean indicating that a user is authenticated
 */
 module.exports = async () => {
-  const substrate = await communicator()
-  if(substrate == 'cicada-api') {
+  await communicator()
+  if(global.substrate === 'cicada-api') {
     const httpResult = await makeHttpRequest(
       'http://localhost:3301/v1/waitForAuthentication',
       {
@@ -18,5 +18,13 @@ module.exports = async () => {
       }
     )
     return httpResult
+  }
+  if(global.substrate === 'babbage-xdm') {
+    const waitForAuthentication = async () => {
+      const xdmResult = await window.CWI.waitForAuthentication()
+      console.log(xdmResult)
+      return xdmResult
+    }
+    waitForAuthentication()
   }
 }

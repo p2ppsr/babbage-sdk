@@ -22,8 +22,8 @@ module.exports = async ({
   reason = 'No reason provided.',
   counterparty = 'self'
 }) => {
-  const substrate = await communicator()
-  if(substrate == 'cicada-api') {
+  await communicator()
+  if(global.substrate === 'cicada-api') {
     const httpResult = await makeHttpRequest(
       'http://localhost:3301/v1/publicKey' +
       `?protocolID=${encodeURIComponent(protocolID)}` +
@@ -40,5 +40,20 @@ module.exports = async ({
       }
     )
     return httpResult
+  }
+  if(global.substrate === 'babbage-xdm') {
+    const getPublicKey = async () => {
+      const xdmResult = await window.CWI.getPublicKey({
+        protocolID,
+        keyID,
+        privileged,
+        identityKey,
+        reason,
+        counterparty
+      })
+      console.log(xdmResult)
+      return xdmResult
+    }
+    getPublicKey()
   }
 }

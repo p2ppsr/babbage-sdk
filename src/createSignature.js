@@ -23,8 +23,8 @@ module.exports = async ({
   counterparty = 'self',
   privileged = false
 }) => {
-  const substrate = await communicator()
-  if(substrate == 'cicada-api') {
+  await communicator()
+  if(global.substrate === 'cicada-api') {
     const httpResult = await makeHttpRequest(
       'http://localhost:3301/v1/createSignature' +
       `?protocolID=${encodeURIComponent(protocolID)}` +
@@ -41,5 +41,20 @@ module.exports = async ({
       }
     )
     return httpResult
+  }
+  if(global.substrate === 'babbage-xdm') {
+    const createSignature = async () => {
+      const xdmResult = await window.CWI.createSignature({
+        data,
+        protocolID,
+        keyID,
+        description,
+        counterparty,
+        privileged
+      })
+      console.log(xdmResult)
+      return xdmResult
+    }
+    createSignature()
   }
 }

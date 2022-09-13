@@ -6,8 +6,8 @@ const makeHttpRequest = require('./utils/makeHttpRequest')
  * @returns {Promise<Object>} Returns an object indicating whether a user is currently authenticated.
 */
 module.exports = async () => {
-  const substrate = await communicator()
-  if(substrate == 'cicada-api') {
+  await communicator()
+  if(global.substrate === 'cicada-api') {
     const httpResult = await makeHttpRequest(
       'http://localhost:3301/v1/isAuthenticated',
       {
@@ -18,5 +18,13 @@ module.exports = async () => {
       }
     )
     return httpResult
+  }
+  if(global.substrate === 'babbage-xdm') {
+    const isAuthenticated = async () => {
+      const xdmResult = await window.CWI.isAuthenticated()
+      console.log(xdmResult)
+      return xdmResult
+    }
+    isAuthenticated()
   }
 }

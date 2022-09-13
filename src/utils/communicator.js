@@ -1,88 +1,43 @@
-const { isNode } = require('browser-or-node')
-const fetch =
-  isNode
-    ? require('isomorphic-fetch')
-    : window.fetch
-// Wrapper function around the fetch API
+const promiseWithTimeout = require('./promiseWithTimeout')
+global.substrate = undefined
+
+// Set substrate according to availability and kernel compatability
 module.exports = async (
-  routeURL,
-  requestInput = {}
 ) => {
-  const withTimedout = (millis, promise) => {
-    const timeout = new Promise((resolve, reject) =>
-      setTimeout(() => 
-        reject(`Timed out after ${millis} ms.`),
-        millis
-      )
-    )
-    return Promise.race([
-      promise,
-      timeout
-    ])
-  }
-
   try {
-    let substrate
-    const kernelVersion = await withTimedout(200, getXdmKernelVersion()) //Prosperity Client App’s runCommand
-    if (kernelVersion && !kernelVersion.startsWith('0.3.')){
-      const e = new Error(`Error in XDM kernel version ${kernelVersion}`)
-      e.code = ERR_XDM_INCOMPATIBLE_KERNEL
+    let kernelVersion
+    console.log('typeof window:', typeof window)
+    if (typeof window !== 'undefined' && window.CWI) {
+      kernelVersion = await promiseWithTimeout(200, window.CWI.getVersion()) // Prosperity Client App’s runCommand
+      if (kernelVersion && !kernelVersion.startsWith('0.3.')) {
+        const e = new Error(`Error in XDM kernel version ${kernelVersion}`)
+        e.code = 'ERR_XDM_INCOMPATIBLE_KERNEL'
+        throw e
+      }
+      global.substrate = 'babbage-xdm'
+      console.log('communicator():http:kernelVersion:', kernelVersion)
+      return
+    }
+    global.substrate = 'cicada-api'
+    kernelVersion = await require('../getVersion')(false)
+    global.substrate = undefined
+    console.log('communicator():http:kernelVersion:', kernelVersion)
+
+    // Check kernel compatability
+    if (kernelVersion && !kernelVersion.startsWith('0.3.')) {
+      const e = new Error(`Error in Desktop kernel version ${kernelVersion}`)
+      e.code = 'ERR_DESKTOP_INCOMPATIBLE_KERNEL'
       throw e
-    } else {
-      substrate = 'babbage-xdm'
-
     }
-    let success = false
-    (
-      'http://localhost:3301/v1/version',
-      {
-        method: 'get',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    )    
-    if(res.code === 200){
-      success = true
-      kernelVersion = res.message
-      if (kernelVerson && !kernelVerson.startsWith('0.3.')){
-        const e = new Error(`Error in Desktop kernel version ${kernelVersion}`)
-        e.code = ERR_DESKTOP_INCOMPATIBLE_KERNEL
-        throw e
-      }
-      substrate = 'cicada-api'
-
-      // If we're in a node environment, we need to inject the Orign header
-      if (isNode) {
-        requestInput.headers = {
-          ...requestInput.headers,
-          Origin: 'http://localhost'
-        }
-      }
-      const response = await fetch(
-        routeURL,
-        requestInput
-      )
-
-      // Determine the request success and response content type
-      if (response.headers.get('content-type') === 'application/octet-stream') {
-        // Success
-        return await response.arrayBuffer()
-      }
-      const parsedJSON = await response.json()
-      if (parsedJSON.status === 'error') {
-        const e = new Error(parsedJSON.description)
-        e.code = parsedJSON.code || 'ERR_BAD_REQUEST'
-        throw e
-      }
-      return parsedJSON.result
-    }
-  } catch(e){
+    global.substrate = 'cicada-api'
+  } catch (e) {
     console.log(e)
-    throw e
+    const e_ = new Error('Error the user does not have a current Babbage identity')
+    e_.code = 'ERR_NO_METANET_IDENTITY'
+    throw e_
   }
 }
-  /*
+/*
 The communicator then sends out a getVersion request to the Port 3301 API (see current Babbage SDK code for an example of this request).
 
 If a response is received, and if the kernel is 0.3.x, then the Communicator assigns cicada-api to the substrate global.
@@ -97,7 +52,7 @@ ELSE the substrate global variable was already previously defined by earlier SDK
 
 IF the substrate variable is cicada-api, then the Communicator sends the request over the Port 3301 API, the same as is currently implemented.
 
-ELSE IF the substrate variable is babbage-xdm, then the Communicator uses cross-domain messaging to communicate with a kernel using an inter-iframe protocol. 
+ELSE IF the substrate variable is babbage-xdm, then the Communicator uses cross-domain messaging to communicate with a kernel using an inter-iframe protocol.
 
 The code for Prosperity-Client-App should be referenced and adapted for this purpose.
 

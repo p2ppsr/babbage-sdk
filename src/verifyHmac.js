@@ -29,8 +29,8 @@ module.exports = async ({
       hmac = Buffer.from(hmac).toString('base64')
     }
   }
-  const substrate = await communicator()
-  if(substrate == 'cicada-api') {
+  await communicator()
+  if(global.substrate === 'cicada-api') {
     const httpResult = await makeHttpRequest(
       'http://localhost:3301/v1/verifyHmac' +
       `?protocolID=${encodeURIComponent(protocolID)}` +
@@ -48,5 +48,21 @@ module.exports = async ({
       }
     )
     return httpResult
+  }
+  if(global.substrate === 'babbage-xdm') {
+    const verifyHmac = async () => {
+      const xdmResult = await window.CWI.verifyHmac({
+        data,
+        hmac,
+        protocolID,
+        keyID,
+        description,
+        counterparty,
+        privileged
+      })
+      console.log(xdmResult)
+      return xdmResult
+    }
+    verifyHmac()
   }
 }

@@ -12,7 +12,9 @@
   "scripts": {
     "doc": "documentation readme --section=API src/index.js",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "standard --fix src/**/*.js"
   },
   "bugs": {
     "url": "https://github.com/p2ppsr/babbage-sdk/issues"
@@ -21,6 +23,7 @@
   "dependencies": {
     "browser-or-node": "^2.0.0",
     "isomorphic-fetch": "^3.0.0",
+    "optionator": "^0.9.1",
     "standard": "^17.0.0"
   },
   "devDependencies": {

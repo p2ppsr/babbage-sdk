@@ -8,8 +8,8 @@ const makeHttpRequest = require('./utils/makeHttpRequest')
  * @returns {Promise<Object>} An object containing the found certificates
  */
 module.exports = async (certifiers, types) => {
-  const substrate = await communicator()
-  if(substrate == 'cicada-api') {
+  await communicator()
+  if(global.substrate === 'cicada-api') {
     const httpResult = await makeHttpRequest(
       'http://localhost:3301/v1/ninja/findCertificates',
       {
@@ -24,5 +24,16 @@ module.exports = async (certifiers, types) => {
       }
     )
     return httpResult
+  }
+  if(global.substrate === 'babbage-xdm') {
+    const getCertificates = async () => {
+      const xdmResult = await window.CWI.getCertificates({
+        certifiers,
+        types
+      })
+      console.log(xdmResult)
+      return xdmResult
+    }
+    getCertificates()
   }
 }
