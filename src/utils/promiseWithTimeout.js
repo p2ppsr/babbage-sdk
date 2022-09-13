@@ -7,12 +7,15 @@ module.exports = async ({
   timeout,
   promise
 }) => {
+  console.log('start')
   const timedout = new Promise((resolve, reject) =>
-    setTimeout(() =>
+     setTimeout(() =>
       reject(`Timed out after ${timeout} ms.`),
     timeout
     )
   )
+  console.log('promise:', promise)
+  console.log('timedout:', timedout)
   return Promise.race([
     promise,
     timedout
