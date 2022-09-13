@@ -23,8 +23,8 @@ module.exports = async ({
   privileged = false,
   returnType = 'Uint8Array'
 }) => {
-  const substrate = await communicator()
-  if(substrate == 'cicada-api') {
+  await communicator()
+  if(global.substrate === 'cicada-api') {
     const httpResult = await makeHttpRequest(
       'http://localhost:3301/v1/decrypt' +
       `?protocolID=${encodeURIComponent(protocolID)}` +
@@ -42,5 +42,21 @@ module.exports = async ({
       }
     )
     return httpResult
+  }
+  if(global.substrate === 'babbage-xdm') {
+    const decrypt = async () => {
+      const xdmResult = await window.CWI.decrypt({
+        ciphertext,
+        protocolID,
+        keyID,
+        description,
+        counterparty,
+        privileged,
+        returnType
+      })
+      console.log(xdmResult)
+      return xdmResult
+    }
+    decrypt()
   }
 }
