@@ -18,8 +18,9 @@ module.exports = async ({
   labels
 }) => {
   try {
-    await communicator()
-    if(global.substrate === 'cicada-api') {
+    const substrate = await communicator().substrate
+    console.log('substrate:', substrate)
+    if(substrate === 'cicada-api') {
       const httpResult = await makeHttpRequest(
         'http://localhost:3301/v1/createAction',
         {
@@ -38,7 +39,7 @@ module.exports = async ({
       )
       return httpResult
     }
-    if(global.substrate === 'babbage-xdm') {
+    if(substrate === 'babbage-xdm') {
       const ids = {}
       return new Promise(resolve => {
         window.parent.postMessage({

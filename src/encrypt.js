@@ -24,40 +24,52 @@ module.exports = async ({
   privileged = false,
   returnType = 'Uint8Array'
 }) => {
-  await communicator()
-  if(global.substrate === 'cicada-api') {
-    const httpResult = await makeHttpRequest(
-      'http://localhost:3301/v1/encrypt' +
-        `?protocolID=${encodeURIComponent(protocolID)}` +
-        `&keyID=${encodeURIComponent(keyID)}` +
-        `&description=${encodeURIComponent(description)}` +
-        `&counterparty=${encodeURIComponent(counterparty)}` +
-        `&privileged=${encodeURIComponent(privileged)}` +
-        `&returnType=${encodeURIComponent(returnType)}`,
-      {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/octet-stream'
-        },
-        body: plaintext
-      }
-    )
-    return httpResult
-  }
-  if(global.substrate === 'babbage-xdm') {
-    const encrypt = async () => {
-      const xdmResult = await window.CWI.encrypt({
-        plaintext,
-        protocolID,
-        keyID,
-        description,
-        counterparty,
-        privileged,
-        returnType
-      })
-      console.log(xdmResult)
-      return xdmResult
+  try {
+    const substrate = await communicator().substrate
+    console.log('substrate:', substrate)
+    if(substrate === 'cicada-api') {
+      const httpResult = await makeHttpRequest(
+        'http://localhost:3301/v1/encrypt' +
+          `?protocolID=${encodeURIComponent(protocolID)}` +
+          `&keyID=${encodeURIComponent(keyID)}` +
+          `&description=${encodeURIComponent(description)}` +
+          `&counterparty=${encodeURIComponent(counterparty)}` +
+          `&privileged=${encodeURIComponent(privileged)}` +
+          `&returnType=${encodeURIComponent(returnType)}`,
+        {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/octet-stream'
+          },
+          body: plaintext
+        }
+      )
+      return httpResult
     }
-    encrypt()
+    if(substrate === 'babbage-xdm') {
+      const ids = {}
+      return new Promise(resolve => {
+        window.parent.postMessage({
+          type: 'CWI',
+          id: Buffer.from(require('crypto').randomBytes(8)).toString('base64'),
+          call: 'encrypt',
+          params:{
+            plaintext,
+            protocolID,
+            keyID,
+            description,
+            counterparty,
+            privileged,
+            returnType
+          }
+        }, '*')
+        ids[id] = result => {
+          resolve(result)
+          delete ids[id]
+        }
+      })
+    }
+  } catch(e) {
+    console.error(e)
   }
 }

@@ -8,32 +8,44 @@ const makeHttpRequest = require('./utils/makeHttpRequest')
  * @returns {Promise<Object>} An object containing the found certificates
  */
 module.exports = async (certifiers, types) => {
-  await communicator()
-  if(global.substrate === 'cicada-api') {
-    const httpResult = await makeHttpRequest(
-      'http://localhost:3301/v1/ninja/findCertificates',
-      {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          certifiers,
-          types
-        })
-      }
-    )
-    return httpResult
-  }
-  if(global.substrate === 'babbage-xdm') {
-    const getCertificates = async () => {
-      const xdmResult = await window.CWI.getCertificates({
-        certifiers,
-        types
-      })
-      console.log(xdmResult)
-      return xdmResult
+  try {
+    const substrate = await communicator().substrate
+    console.log('substrate:', substrate)
+    if(substrate === 'cicada-api') {
+      const httpResult = await makeHttpRequest(
+        'http://localhost:3301/v1/ninja/findCertificates',
+        {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            certifiers,
+            types
+          })
+        }
+      )
+      return httpResult
     }
-    getCertificates()
+    if(substrate === 'babbage-xdm') {
+      const ids = {}
+      return new Promise(resolve => {
+        window.parent.postMessage({
+          type: 'CWI',
+          id: Buffer.from(require('crypto').randomBytes(8)).toString('base64'),
+          call: 'getCertificates',
+          params:{
+            certifiers,
+            types
+          }
+        }, '*')
+        ids[id] = result => {
+          resolve(result)
+          delete ids[id]
+        }
+      })
+    }
+  } catch(e) {
+    console.error(e)
   }
 }

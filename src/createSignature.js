@@ -23,38 +23,50 @@ module.exports = async ({
   counterparty = 'self',
   privileged = false
 }) => {
-  await communicator()
-  if(global.substrate === 'cicada-api') {
-    const httpResult = await makeHttpRequest(
-      'http://localhost:3301/v1/createSignature' +
-      `?protocolID=${encodeURIComponent(protocolID)}` +
-      `&keyID=${encodeURIComponent(keyID)}` +
-      `&description=${encodeURIComponent(description)}` +
-      `&counterparty=${encodeURIComponent(counterparty)}` +
-      `&privileged=${encodeURIComponent(privileged)}`,
-      {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/octet-stream'
-        },
-        body: data
-      }
-    )
-    return httpResult
-  }
-  if(global.substrate === 'babbage-xdm') {
-    const createSignature = async () => {
-      const xdmResult = await window.CWI.createSignature({
-        data,
-        protocolID,
-        keyID,
-        description,
-        counterparty,
-        privileged
-      })
-      console.log(xdmResult)
-      return xdmResult
+  try {
+    const substrate = await communicator().substrate
+    console.log('substrate:', substrate)
+      if(substrate === 'cicada-api') {
+      const httpResult = await makeHttpRequest(
+        'http://localhost:3301/v1/createSignature' +
+        `?protocolID=${encodeURIComponent(protocolID)}` +
+        `&keyID=${encodeURIComponent(keyID)}` +
+        `&description=${encodeURIComponent(description)}` +
+        `&counterparty=${encodeURIComponent(counterparty)}` +
+        `&privileged=${encodeURIComponent(privileged)}`,
+        {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/octet-stream'
+          },
+          body: data
+        }
+      )
+      return httpResult
     }
-    createSignature()
+    if(substrate === 'babbage-xdm') {
+      const ids = {}
+      return new Promise(resolve => {
+        window.parent.postMessage({
+          type: 'CWI',
+          id: Buffer.from(require('crypto').randomBytes(8)).toString('base64'),
+          call: 'createSignature',
+          params:{
+            data,
+            protocolID,
+            keyID,
+            description,
+            counterparty,
+            privileged
+          }
+        }, '*')
+        ids[id] = result => {
+          resolve(result)
+          delete ids[id]
+        }
+      })
+    }
+  } catch(e) {
+    console.error(e)
   }
 }
