@@ -1,4 +1,5 @@
 const communicator = require('./utils/communicator')
+const makeHttpRequest = require('./utils/makeHttpRequest')
 /**
  * Creates a SHA-256 HMAC with a key belonging to the user.
  *
@@ -20,20 +21,23 @@ module.exports = async ({
   counterparty = 'self',
   privileged = false
 }) => {
-  const result = await communicator(
-    'http://localhost:3301/v1/createHmac' +
-     `?protocolID=${encodeURIComponent(protocolID)}` +
-     `&keyID=${encodeURIComponent(keyID)}` +
-     `&description=${encodeURIComponent(description)}` +
-     `&counterparty=${encodeURIComponent(counterparty)}` +
-     `&privileged=${encodeURIComponent(privileged)}`,
-    {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/octet-stream'
-      },
-      body: data
-    }
-  )
-  return result
+  const substrate = await communicator()
+  if(substrate == 'cicada-api') {
+    const httpResult = await makeHttpRequest(
+      'http://localhost:3301/v1/createHmac' +
+      `?protocolID=${encodeURIComponent(protocolID)}` +
+      `&keyID=${encodeURIComponent(keyID)}` +
+      `&description=${encodeURIComponent(description)}` +
+      `&counterparty=${encodeURIComponent(counterparty)}` +
+      `&privileged=${encodeURIComponent(privileged)}`,
+      {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/octet-stream'
+        },
+        body: data
+      }
+    )
+    return httpResult
+  }
 }

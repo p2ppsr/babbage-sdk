@@ -1,4 +1,5 @@
 const communicator = require('./utils/communicator')
+const makeHttpRequest = require('./utils/makeHttpRequest')
 /**
  * Verifies that a SHA-256 HMAC was created with a key that belongs to the user.
  *
@@ -28,21 +29,24 @@ module.exports = async ({
       hmac = Buffer.from(hmac).toString('base64')
     }
   }
-  const result = await communicator(
-    'http://localhost:3301/v1/verifyHmac' +
-    `?protocolID=${encodeURIComponent(protocolID)}` +
-    `&keyID=${encodeURIComponent(keyID)}` +
-    `&description=${encodeURIComponent(description)}` +
-    `&counterparty=${encodeURIComponent(counterparty)}` +
-    `&privileged=${encodeURIComponent(privileged)}` +
-    `&hmac=${encodeURIComponent(hmac)}`,
-    {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/octet-stream'
-      },
-      body: data
-    }
-  )
-  return result
+  const substrate = await communicator()
+  if(substrate == 'cicada-api') {
+    const httpResult = await makeHttpRequest(
+      'http://localhost:3301/v1/verifyHmac' +
+      `?protocolID=${encodeURIComponent(protocolID)}` +
+      `&keyID=${encodeURIComponent(keyID)}` +
+      `&description=${encodeURIComponent(description)}` +
+      `&counterparty=${encodeURIComponent(counterparty)}` +
+      `&privileged=${encodeURIComponent(privileged)}` +
+      `&hmac=${encodeURIComponent(hmac)}`,
+      {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/octet-stream'
+        },
+        body: data
+      }
+    )
+    return httpResult
+  }
 }

@@ -1,4 +1,5 @@
 const communicator = require('./utils/communicator')
+const makeHttpRequest = require('./utils/makeHttpRequest')
 /**
  * Decrypts data with a key belonging to the user. The same protocolID, keyID, counterparty and privileged parameters that were used during encryption must be used to successfully decrypt.
  *
@@ -22,21 +23,24 @@ module.exports = async ({
   privileged = false,
   returnType = 'Uint8Array'
 }) => {
-  const result = await communicator(
-    'http://localhost:3301/v1/decrypt' +
-     `?protocolID=${encodeURIComponent(protocolID)}` +
-     `&keyID=${encodeURIComponent(keyID)}` +
-     `&description=${encodeURIComponent(description)}` +
-     `&counterparty=${encodeURIComponent(counterparty)}` +
-     `&privileged=${encodeURIComponent(privileged)}` +
-     `&returnType=${encodeURIComponent(returnType)}`,
-    {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/octet-stream'
-      },
-      body: ciphertext
-    }
-  )
-  return result
+  const substrate = await communicator()
+  if(substrate == 'cicada-api') {
+    const httpResult = await makeHttpRequest(
+      'http://localhost:3301/v1/decrypt' +
+      `?protocolID=${encodeURIComponent(protocolID)}` +
+      `&keyID=${encodeURIComponent(keyID)}` +
+      `&description=${encodeURIComponent(description)}` +
+      `&counterparty=${encodeURIComponent(counterparty)}` +
+      `&privileged=${encodeURIComponent(privileged)}` +
+      `&returnType=${encodeURIComponent(returnType)}`,
+      {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/octet-stream'
+        },
+        body: ciphertext
+      }
+    )
+    return httpResult
+  }
 }

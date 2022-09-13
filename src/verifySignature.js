@@ -1,4 +1,5 @@
 const communicator = require('./utils/communicator')
+const makeHttpRequest = require('./utils/makeHttpRequest')
 /**
  * Verifies that a digital signature was created with a key belonging to the user.
  *
@@ -30,22 +31,25 @@ module.exports = async ({
       signature = Buffer.from(signature).toString('base64')
     }
   }
-  const result = await communicator(
-    'http://localhost:3301/v1/verifySignature' +
-    `?signature=${encodeURIComponent(signature)}` +
-    `&protocolID=${encodeURIComponent(protocolID)}` +
-    `&keyID=${encodeURIComponent(keyID)}` +
-    `&description=${encodeURIComponent(description)}` +
-    `&counterparty=${encodeURIComponent(counterparty)}` +
-    `&privileged=${encodeURIComponent(privileged)}` +
-    `&reason=${encodeURIComponent(reason)}`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/octet-stream'
-      },
-      body: data
-    }
-  )
-  return result
+  const substrate = await communicator()
+  if(substrate == 'cicada-api') {
+    const httpResult = await makeHttpRequest(
+      'http://localhost:3301/v1/verifySignature' +
+      `?signature=${encodeURIComponent(signature)}` +
+      `&protocolID=${encodeURIComponent(protocolID)}` +
+      `&keyID=${encodeURIComponent(keyID)}` +
+      `&description=${encodeURIComponent(description)}` +
+      `&counterparty=${encodeURIComponent(counterparty)}` +
+      `&privileged=${encodeURIComponent(privileged)}` +
+      `&reason=${encodeURIComponent(reason)}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/octet-stream'
+        },
+        body: data
+      }
+    )
+    return httpResult
+  }
 }

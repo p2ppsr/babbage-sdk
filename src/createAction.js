@@ -1,4 +1,5 @@
 const communicator = require('./utils/communicator')
+const makeHttpRequest = require('./utils/makeHttpRequest')
 
 /** Creates and broadcasts a BitCoin transaction with the provided inputs and outputs.
  * @param {Object} obj All parameters for this function are provided in an object
@@ -16,21 +17,24 @@ module.exports = async ({
   bridges,
   labels
 }) => {
-  const result = await communicator(
-    'http://localhost:3301/v1/createAction',
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        inputs,
-        outputs,
-        description,
-        bridges,
-        labels
-      })
-    }
-  )
-  return result
+  const substrate = await communicator()
+  if(substrate == 'cicada-api') {
+    const httpResult = await makeHttpRequest(
+      'http://localhost:3301/v1/createAction',
+      {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          inputs,
+          outputs,
+          description,
+          bridges,
+          labels
+        })
+      }
+    )
+    return httpResult
+  }
 }

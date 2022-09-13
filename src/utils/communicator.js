@@ -33,9 +33,15 @@ module.exports = async (
 
     }
     let success = false
-    const res = await fetch(
-      'http://localhost:3301/getKernelVersion',
-    )
+    (
+      'http://localhost:3301/v1/version',
+      {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    )    
     if(res.code === 200){
       success = true
       kernelVersion = res.message

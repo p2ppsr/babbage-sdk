@@ -20,7 +20,8 @@
   "homepage": "https://github.com/p2ppsr/babbage-sdk#readme",
   "dependencies": {
     "browser-or-node": "^2.0.0",
-    "isomorphic-fetch": "^3.0.0"
+    "isomorphic-fetch": "^3.0.0",
+    "standard": "^17.0.0"
   },
   "devDependencies": {
     "documentation": "^13.2.5",
