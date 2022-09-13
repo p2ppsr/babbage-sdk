@@ -7,13 +7,16 @@ module.exports = async (
   try {
     let kernelVersion
     console.log('typeof window:', typeof window)
+    console.log('typeof window.CWI:', typeof window.CWI)
     if (typeof window !== 'undefined' && window.CWI) {
 
+      // Use a promise with timeout
       await new Promise(resolve => setTimeout(resolve, 200))
       kernelVersion = await window.CWI.getVersion()
+      console.log('communicator():xdm:kernelVersion:', kernelVersion)
 
-      // kernelVersion = await promiseWithTimeout(200, window.CWI.getVersion()) // Prosperity Client App’s runCommand
-      if (kernelVersion && !kernelVersion.startsWith('0.3.')) {
+      // Check kernel compatability
+      if (!kernelVersion || !kernelVersion.startsWith('0.3.')) {
         const e = new Error(`Error in XDM kernel version ${kernelVersion}`)
         e.code = 'ERR_XDM_INCOMPATIBLE_KERNEL'
         throw e
@@ -28,7 +31,7 @@ module.exports = async (
     console.log('communicator():http:kernelVersion:', kernelVersion)
 
     // Check kernel compatability
-    if (kernelVersion && !kernelVersion.startsWith('0.3.')) {
+    if (!kernelVersion || !kernelVersion.startsWith('0.3.')) {
       const e = new Error(`Error in Desktop kernel version ${kernelVersion}`)
       e.code = 'ERR_DESKTOP_INCOMPATIBLE_KERNEL'
       throw e
