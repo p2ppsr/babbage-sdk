@@ -10,5 +10,7 @@ module.exports = {
   verifyHmac: require('./verifyHmac'),
   verifySignature: require('./verifySignature'),
   waitForAuthentication: require('./waitForAuthentication'),
-  getCertificates: require('./getCertificates')
+  createCertificate: require('./createCertificate'),
+  getCertificates: require('./getCertificates'),
+  proveCertificate: require('./proveCertificate')
 }
