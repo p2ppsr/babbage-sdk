@@ -31,42 +31,54 @@ module.exports = async ({
       signature = Buffer.from(signature).toString('base64')
     }
   }
-  await communicator()
-  if(global.substrate === 'cicada-api') {
-    const httpResult = await makeHttpRequest(
-      'http://localhost:3301/v1/verifySignature' +
-      `?signature=${encodeURIComponent(signature)}` +
-      `&protocolID=${encodeURIComponent(protocolID)}` +
-      `&keyID=${encodeURIComponent(keyID)}` +
-      `&description=${encodeURIComponent(description)}` +
-      `&counterparty=${encodeURIComponent(counterparty)}` +
-      `&privileged=${encodeURIComponent(privileged)}` +
-      `&reason=${encodeURIComponent(reason)}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/octet-stream'
-        },
-        body: data
-      }
-    )
-    return httpResult
-  }
-  if(global.substrate === 'babbage-xdm') {
-    const verifySignature = async () => {
-      const xdmResult = await window.CWI.verifySignature({
-        data,
-        signature,
-        protocolID,
-        keyID,
-        description,
-        counterparty,
-        privileged,
-        reason
-      })
-      console.log(xdmResult)
-      return xdmResult
+  try {
+    const substrate = await communicator().substrate
+    console.log('substrate:', substrate)
+    if(substrate === 'cicada-api') {
+      const httpResult = await makeHttpRequest(
+        'http://localhost:3301/v1/verifySignature' +
+        `?signature=${encodeURIComponent(signature)}` +
+        `&protocolID=${encodeURIComponent(protocolID)}` +
+        `&keyID=${encodeURIComponent(keyID)}` +
+        `&description=${encodeURIComponent(description)}` +
+        `&counterparty=${encodeURIComponent(counterparty)}` +
+        `&privileged=${encodeURIComponent(privileged)}` +
+        `&reason=${encodeURIComponent(reason)}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/octet-stream'
+          },
+          body: data
+        }
+      )
+      return httpResult
     }
-    verifySignature()
+    if(substrate === 'babbage-xdm') {
+      const ids = {}
+      return new Promise(resolve => {
+        window.parent.postMessage({
+          type: 'CWI',
+          id: Buffer.from(require('crypto').randomBytes(8)).toString('base64'),
+          call: 'verifySignature',
+          params:{
+            data,
+            signature,
+            protocolID,
+            keyID,
+            description,
+            counterparty,
+            privileged,
+            reason
+          }
+        }, '*')
+        ids[id] = result => {
+          resolve(result)
+          delete ids[id]
+        }
+      })
+    }
+  } catch(e) {
+    console.error(e)
   }
-}
+} 
