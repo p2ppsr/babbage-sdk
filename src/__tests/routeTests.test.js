@@ -5,27 +5,13 @@ const BabbageSDK = require('../index')
 // Tests makeHttpRequest.js is handling basic errors correctly for every route
 jest.setTimeout(90000)
 describe('babbage-sdk-routes', () => {
+
   beforeEach(() => {
 
   })
   afterEach(() => {
     jest.clearAllMocks()
   })
-  it('Timedout promise call', async () => {
-    version = await getVersion()
-    console.log('before timed promise - version:',version)
-    version = await promiseWithTimeout(10, getVersion())
-    console.log('timed promise - version:',version)
-    // await expect(async () => await promiseWithTimeout(10, getVersion())).toEqual('')
-  })
-  it('Normal promise call', async () => {
-    version = await getVersion()
-    console.log('before timed promise - version:',version)
-    version = await promiseWithTimeout(1000, getVersion())
-    console.log('timed promise - version:',version)
-    // await expect(async () => await promiseWithTimeout(1000, getVersion())).toEqual('0.3.39')
-  })
-  /*
   it('Throws an error when trying to make a bad request to createAction', async () => {
     await expect(async () => await BabbageSDK.createAction({})).rejects.toThrow(new Error(
       'Provide a present-tense description for your Action!'
@@ -80,5 +66,4 @@ describe('babbage-sdk-routes', () => {
     })
     expect(result).toEqual(false)
   })
-  */
 })
