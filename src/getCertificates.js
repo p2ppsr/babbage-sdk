@@ -8,9 +8,11 @@ const makeHttpRequest = require('./utils/makeHttpRequest')
  * @returns {Promise<Object>} An object containing the found certificates
  */
 module.exports = async (certifiers, types) => {
+  let com // Has to be declared as variable because we need to test it inside the catch
   try {
-    const com = await communicator()
-    if(com.substrate === 'cicada-api') {
+    com = await communicator()
+    com = await communicator()
+    if (com.substrate === 'cicada-api') {
       const httpResult = await makeHttpRequest(
         'http://localhost:3301/v1/ninja/findCertificates',
         {
@@ -26,7 +28,7 @@ module.exports = async (certifiers, types) => {
       )
       return httpResult
     }
-    if(com.substrate === 'babbage-xdm') {
+    if (com.substrate === 'babbage-xdm') {
       const ids = {}
       return new Promise(resolve => {
         const id = Buffer.from(require('crypto').randomBytes(8)).toString('base64')
@@ -40,14 +42,18 @@ module.exports = async (certifiers, types) => {
           type: 'CWI',
           id,
           call: 'getCertificates',
-          params:{
+          params: {
             certifiers,
             types
           }
         }, '*')
       })
     }
-  } catch(e) {
-    console.error(e)
+  } catch (e) {
+    if (e.code === 'ERR_NO_METANET_IDENTITY' && com.substrate === 'babbage-xdm') {
+      // TODO: If substrate is babbage-xdm then send message to parent and call CWI.initialize()
+    } else {
+      console.error(e)
+    }
   }
 }

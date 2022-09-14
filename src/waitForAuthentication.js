@@ -6,9 +6,10 @@ const makeHttpRequest = require('./utils/makeHttpRequest')
  * @returns {Promise<Object>} An object containing a boolean indicating that a user is authenticated
 */
 module.exports = async () => {
+  let com // Has to be declared as variable because we need to test it inside the catch
   try {
-    const com = await communicator()
-    if(com.substrate === 'cicada-api') {
+    com = await communicator()
+    if (com.substrate === 'cicada-api') {
       const httpResult = await makeHttpRequest(
         'http://localhost:3301/v1/waitForAuthentication',
         {
@@ -20,7 +21,7 @@ module.exports = async () => {
       )
       return httpResult
     }
-    if(com.substrate === 'babbage-xdm') {
+    if (com.substrate === 'babbage-xdm') {
       const ids = {}
       return new Promise(resolve => {
         const id = Buffer.from(require('crypto').randomBytes(8)).toString('base64')
@@ -33,11 +34,15 @@ module.exports = async () => {
         window.parent.postMessage({
           type: 'CWI',
           id,
-          call: 'waitForAuthentication',
+          call: 'waitForAuthentication'
         }, '*')
       })
     }
   } catch (e) {
-    console.error(e)
+    if (e.code === 'ERR_NO_METANET_IDENTITY' && com.substrate === 'babbage-xdm') {
+      // TODO: If substrate is babbage-xdm then send message to parent and call CWI.initialize()
+    } else {
+      console.error(e)
+    }
   }
 }

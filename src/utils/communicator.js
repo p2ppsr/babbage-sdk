@@ -9,7 +9,7 @@ const httpGetVersion = async () => {
       }
     }
   )
-  console.log('communicator():httpKernelVersion:', httpKernelVersion)
+  // console.log('communicator():httpKernelVersion:', httpKernelVersion)
 
   // Check kernel compatability
   if (httpKernelVersion && !httpKernelVersion.startsWith('0.3.')) {
@@ -24,53 +24,49 @@ const httpGetVersion = async () => {
 const communicator = async () => {
   console.log('communicator():this.substrate:', this.substrate)
   try {
-
     // substrate already set, so just return
     if (this.substrate === 'babbage-xdm' || this.substrate === 'cicada-api') return this
-      console.log('communicator():window.parent:', window.parent)
-      console.log('communicator():window.parent.name:', window.parent.name)
 
-      // TODO: Need a quick way to differenciate between running inside Prosperity and normal browser window
-      // Using window.name raises a DOMException: Permission denied to access property "name" on cross-origin object
-      // if (window.parent.name === 'Prosperity') {
+    // TODO: Need a quick way to differenciate between running inside Prosperity and normal browser window
+    // Using window.name raises a DOMException: Permission denied to access property "name" on cross-origin object
+    // if (window.parent.name === 'Prosperity') {
 
-      // TODO need 200ms timeout
-      return new Promise((resolve) => {
-        const id = Buffer.from(require('crypto').randomBytes(8)).toString('base64')
-        window.addEventListener('message', async e => {
-          if (e.data.type !== 'CWI' || !e.isTrusted || e.data.id !== id) return
-          const xdmKernelVersion = e.data.result
-          console.log('communicator():message:xdmKernelVersion', xdmKernelVersion)
-          if (typeof xdmKernelVersion === 'string') {
-            if (!xdmKernelVersion.startsWith('0.3.')) {
-              const e = new Error(`Error in XDM kernel version ${xdmKernelVersion}`)
-              e.code = 'ERR_XDM_INCOMPATIBLE_KERNEL'
-              throw e
-            }
-            // console.log('communicator():xdmKernelVersion:', xdmKernelVersion)
-            this.substrate = 'babbage-xdm'
-          } else {
-            console.log('communicator():in Promise call httpGetVersion()')
-            await httpGetVersion()
+    // TODO need 200ms timeout
+    return new Promise((resolve) => {
+      const id = Buffer.from(require('crypto').randomBytes(8)).toString('base64')
+      window.addEventListener('message', async e => {
+        if (e.data.type !== 'CWI' || !e.isTrusted || e.data.id !== id) return
+        const xdmKernelVersion = e.data.result
+        // console.log('communicator():message:xdmKernelVersion', xdmKernelVersion)
+        if (typeof xdmKernelVersion === 'string') {
+          if (!xdmKernelVersion.startsWith('0.3.')) {
+            const e = new Error(`Error in XDM kernel version ${xdmKernelVersion}`)
+            e.code = 'ERR_XDM_INCOMPATIBLE_KERNEL'
+            throw e
           }
-          console.log('communicator():this.substrate:', this.substrate)
-          resolve(this)
-        })
-
-        // Get the parent version to check its compatability
-        console.log('communicator():id:', id)
-        window.parent.postMessage({
-          type: 'CWI',
-          id,
-          call: 'getVersion'
-        }, '*')
+          // console.log('communicator():xdmKernelVersion:', xdmKernelVersion)
+          this.substrate = 'babbage-xdm'
+        } else {
+          // console.log('communicator():in Promise call httpGetVersion()')
+          await httpGetVersion()
+        }
+        // console.log('communicator():this.substrate:', this.substrate)
+        resolve(this)
       })
+
+      // Get the parent version to check its compatability
+      window.parent.postMessage({
+        type: 'CWI',
+        id,
+        call: 'getVersion'
+      }, '*')
+    })
     // TODO: See above
     // } else {
     //  console.log('communicator():direct call httpGetVersion()')
     //  await httpGetVersion()
     //  return this
-    //}
+    // }
   } catch (e) {
     console.error(e)
     const e_ = new Error('Error the user does not have a current Babbage identity')

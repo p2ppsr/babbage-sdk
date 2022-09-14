@@ -21,9 +21,10 @@ module.exports = async ({
   counterparty = 'self',
   privileged = false
 }) => {
+  let com // Has to be declared as variable because we need to test it inside the catch
   try {
-    const com = await communicator()
-    if(com.substrate === 'cicada-api') {
+    com = await communicator()
+    if (com.substrate === 'cicada-api') {
       const httpResult = await makeHttpRequest(
         'http://localhost:3301/v1/createHmac' +
         `?protocolID=${encodeURIComponent(protocolID)}` +
@@ -41,7 +42,7 @@ module.exports = async ({
       )
       return httpResult
     }
-    if(com.substrate === 'babbage-xdm') {
+    if (com.substrate === 'babbage-xdm') {
       const ids = {}
       return new Promise(resolve => {
         const id = Buffer.from(require('crypto').randomBytes(8)).toString('base64')
@@ -55,7 +56,7 @@ module.exports = async ({
           type: 'CWI',
           id,
           call: 'createHmac',
-          params:{
+          params: {
             data,
             protocolID,
             keyID,
@@ -66,7 +67,11 @@ module.exports = async ({
         }, '*')
       })
     }
-  } catch(e) {
-    console.error(e)
+  } catch (e) {
+    if (e.code === 'ERR_NO_METANET_IDENTITY' && com.substrate === 'babbage-xdm') {
+      // TODO: If substrate is babbage-xdm then send message to parent and call CWI.initialize()
+    } else {
+      console.error(e)
+    }
   }
 }
