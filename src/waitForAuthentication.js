@@ -26,15 +26,19 @@ module.exports = async () => {
       const ids = {}
       return new Promise(resolve => {
         const id = Buffer.from(require('crypto').randomBytes(8)).toString('base64')
+        window.addEventListener('message', async e => {
+          console.log('getPublicKey():message received:id', id)
+          if (e.data.type !== 'CWI' || !e.isTrusted || e.data.id !== id) return
+          ids[id] = e.data.result
+          console.log('getPublicKey():e.data.result', e.data.result)
+          resolve(e.data.result)
+          delete ids[id]
+        })
         window.parent.postMessage({
           type: 'CWI',
           id,
           call: 'waitForAuthentication',
         }, '*')
-        ids[id] = result => {
-          resolve(result)
-          delete ids[id]
-        }
       })
     }
   } catch (e) {
