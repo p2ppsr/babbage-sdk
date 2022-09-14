@@ -26,8 +26,6 @@ module.exports = async ({
 }) => {
   try {
     const com = await communicator()
-    console.log('encrypt:com:', com)
-    console.log('encrypt:com.substrate:', com.substrate)
     if(com.substrate === 'cicada-api') {
       const httpResult = await makeHttpRequest(
         'http://localhost:3301/v1/encrypt' +
@@ -52,10 +50,8 @@ module.exports = async ({
       return new Promise(resolve => {
         const id = Buffer.from(require('crypto').randomBytes(8)).toString('base64')
         window.addEventListener('message', async e => {
-          console.log('getPublicKey():message received:id', id)
           if (e.data.type !== 'CWI' || !e.isTrusted || e.data.id !== id) return
           ids[id] = e.data.result
-          console.log('getPublicKey():e.data.result', e.data.result)
           resolve(e.data.result)
           delete ids[id]
         })
