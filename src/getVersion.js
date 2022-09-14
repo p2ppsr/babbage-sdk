@@ -24,9 +24,10 @@ module.exports = async () => {
     if(com.substrate === 'babbage-xdm') {
       const ids = {}
       return new Promise(resolve => {
+        const id = Buffer.from(require('crypto').randomBytes(8)).toString('base64')
         window.parent.postMessage({
           type: 'CWI',
-          id: Buffer.from(require('crypto').randomBytes(8)).toString('base64'),
+          id,
           call: 'getVersion',
         }, '*')
         ids[id] = result => {
