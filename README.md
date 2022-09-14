@@ -113,8 +113,12 @@ const decryptedData = await decrypt({
 *   [verifySignature](#verifysignature)
     *   [Parameters](#parameters-7)
 *   [waitForAuthentication](#waitforauthentication)
-*   [getCertificates](#getcertificates)
+*   [createCertificate](#createcertificate)
     *   [Parameters](#parameters-8)
+*   [getCertificates](#getcertificates)
+    *   [Parameters](#parameters-9)
+*   [proveCertificate](#provecertificate)
+    *   [Parameters](#parameters-10)
 
 ### createAction
 
@@ -277,16 +281,47 @@ Waits for a user to be authenticated.
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** An object containing a boolean indicating that a user is authenticated
 
+### createCertificate
+
+Creates a signed certificate
+
+#### Parameters
+
+*   `obj` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters for this function are provided in an object
+
+    *   `obj.certificateType` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The type of certificate to create
+    *   `obj.fieldObject` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** The fields to add to the certificate
+    *   `obj.certifierUrl` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The URL of the certifier signing the certificate
+    *   `obj.certifierPublicKey` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The public identity key of the certifier signing the certificate
+
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** A signed certificate
+
 ### getCertificates
 
 Returns found certificates
 
 #### Parameters
 
-*   `certifiers` **any** The certifiers to filter certificates by
-*   `types` **any** The certificate types to filter certificates by
+*   `obj` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters for this function are provided in an object
+
+    *   `obj.certifiers` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)<[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The certifiers to filter certificates by
+    *   `obj.types` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)<[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The certificate types to filter certificates by
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** An object containing the found certificates
+
+### proveCertificate
+
+Creates certificate proof specifically for verifier
+
+#### Parameters
+
+*   `obj` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters for this function are provided in an object
+
+    *   `obj.certificate` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** The certificate to prove
+    *   `obj.fieldsToReveal` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)<[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)>?** The names of the fields to reveal to the verifier
+    *   `obj.verifierPublicIdentityKey` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The public identity key of the verifier
+
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** A certificate proof for the verifier to check
 
 ## License
 
