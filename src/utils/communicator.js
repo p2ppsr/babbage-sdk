@@ -1,26 +1,20 @@
 const makeHttpRequest = require('./makeHttpRequest')
 // const makeHttpRequest = request('./makeHttpRequest')
 // Set substrate according to availability and kernel compatability
-let substrate
+// let substrate
 const communicator = async () => {
   console.log('communicator():this.substrate:', this.substrate)
-  if (this.substrate === 'babbage-xdm' || this.substrate === 'cicada-api') return
+
+  // substrate already set, so just return
+  if (this.substrate === 'babbage-xdm' || this.substrate === 'cicada-api') return this
   try {
-    // TODO need to use messageHandler()
-    console.log('communicator():typeof window.parent.postMessage:', typeof window.parent.postMessage)
-    const getID = () => Buffer.from(require('crypto').randomBytes(8)).toString('base64')
-    const id = getID()
     if (typeof window.parent.postMessage === 'function') {
       // Use a promise with timeout
       const ids = {}
-      console.log('communicator():new Promise')
+      // console.log('communicator():new Promise')
       return new Promise((resolve, reject) => {
+        const id = Buffer.from(require('crypto').randomBytes(8)).toString('base64')
         window.addEventListener('message', async e => {
-          // console.log('communicator():parent:message received:id', id)
-          // console.log('communicator():e.data.type:', e.data.type)
-          // console.log('communicator():e.isTrusted:', e.isTrusted)
-          // console.log('communicator():e.data.id:', e.data.id)
-          // console.log('communicator():e.data.result:', e.data.result)
           if (e.data.type !== 'CWI' || !e.isTrusted || e.data.id !== id) return
           const xdmKernelVersion = e.data.result
           console.log('communicator():message:xdmKernelVersion', xdmKernelVersion)
@@ -28,12 +22,11 @@ const communicator = async () => {
             if (!xdmKernelVersion.startsWith('0.3.')) {
               const e = new Error(`Error in XDM kernel version ${xdmKernelVersion}`)
               e.code = 'ERR_XDM_INCOMPATIBLE_KERNEL'
-              reject(e)
+              // reject(e)
               throw e
             }
             // console.log('communicator():xdmKernelVersion:', xdmKernelVersion)
             this.substrate = 'babbage-xdm'
-            console.log('communicator():substrate:', substrate)
           } else {
             const httpKernelVersion = await makeHttpRequest(
               'http://localhost:3301/v1/version',
@@ -50,20 +43,21 @@ const communicator = async () => {
             if (httpKernelVersion && !httpKernelVersion.startsWith('0.3.')) {
               const e = new Error(`Error in Desktop kernel version ${httpKernelVersion}`)
               e.code = 'ERR_DESKTOP_INCOMPATIBLE_KERNEL'
-              reject(e)
+              // reject(e)
               throw e
             }
             this.substrate = 'cicada-api'
           }
+          console.log('communicator():this.substrate:', this.substrate)
           resolve(this)
         })
-        console.log('communicator():-> new Promise')
         console.log('communicator():id:', id)
         window.parent.postMessage({
           type: 'CWI',
           id,
           call: 'getVersion'
         }, '*')
+        /*
         ids[id] = result => {
           console.log('communicator():before resolve(result):result', result)
           resolve(this)
@@ -73,6 +67,7 @@ const communicator = async () => {
           // console.log('1 communicator():xdmKernelVersion:', xdmKernelVersion)
           // Check kernel compatability
         }
+        */
       })
       // console.log('2 communicator():xdmKernelVersion:', xdmKernelVersion)
     }
