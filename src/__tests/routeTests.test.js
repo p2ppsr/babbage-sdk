@@ -1,6 +1,4 @@
 /* eslint-env jest */
-const promiseWithTimeout = require('../utils/promiseWithTimeout')
-const getVersion = require('../getVersion')
 const BabbageSDK = require('../index')
 // Tests makeHttpRequest.js is handling basic errors correctly for every route
 jest.setTimeout(90000)
