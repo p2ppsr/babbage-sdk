@@ -22,9 +22,10 @@ module.exports = async ({
   privileged = false
 }) => {
   try {
-    const substrate = await communicator().substrate
-    console.log('substrate:', substrate)
-    if(substrate === 'cicada-api') {
+    const com = await communicator()
+    console.log('createHmac:com:', com)
+    console.log('createHmac:com.substrate:', com.substrate)
+    if(com.substrate === 'cicada-api') {
       const httpResult = await makeHttpRequest(
         'http://localhost:3301/v1/createHmac' +
         `?protocolID=${encodeURIComponent(protocolID)}` +
@@ -42,7 +43,7 @@ module.exports = async ({
       )
       return httpResult
     }
-    if(substrate === 'babbage-xdm') {
+    if(com.substrate === 'babbage-xdm') {
       const ids = {}
       return new Promise(resolve => {
         window.parent.postMessage({

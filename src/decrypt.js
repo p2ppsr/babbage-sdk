@@ -24,9 +24,10 @@ module.exports = async ({
   returnType = 'Uint8Array'
 }) => {
   try {
-    const substrate = await communicator().substrate
-    console.log('substrate:', substrate)
-    if(substrate === 'cicada-api') {
+    const com = await communicator()
+    console.log('decrypt:com', com)
+    console.log('decrypt:com.substrate:', com.substrate)
+    if(com.substrate === 'cicada-api') {
       const httpResult = await makeHttpRequest(
         'http://localhost:3301/v1/decrypt' +
         `?protocolID=${encodeURIComponent(protocolID)}` +
@@ -45,7 +46,7 @@ module.exports = async ({
       )
       return httpResult
     }
-    if(substrate === 'babbage-xdm') {
+    if(com.substrate === 'babbage-xdm') {
       const ids = {}
       return new Promise(resolve => {
         window.parent.postMessage({

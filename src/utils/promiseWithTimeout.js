@@ -7,11 +7,12 @@ module.exports = async ({
   timeout,
   promise
 }) => {
-  Promise.timeout = function(timeout, promise){
+  Promise.timeout = function (timeout, promise) {
     return Promise.race([
-    promise,
-    new Promise(function(resolve, reject){
-      setTimeout(function() { reject('Timed out') }, timeout)
-    })
-  ])
-}}
+      promise,
+      new Promise(function (resolve, reject) {
+        setTimeout(function () { reject('Timed out') }, timeout)
+      })
+    ])
+  }
+}
