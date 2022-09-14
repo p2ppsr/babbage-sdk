@@ -1,18 +1,36 @@
 const makeHttpRequest = require('./makeHttpRequest')
-// const makeHttpRequest = request('./makeHttpRequest')
-// Set substrate according to availability and kernel compatability
-// let substrate
-const communicator = async () => {
-  console.log('communicator():this.substrate:', this.substrate)
+try {
+  const httpGetVersion = async () => {
+    const httpKernelVersion = await makeHttpRequest(
+      'http://localhost:3301/v1/version',
+      {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+    console.log('communicator():httpKernelVersion:', httpKernelVersion)
 
-  // substrate already set, so just return
-  if (this.substrate === 'babbage-xdm' || this.substrate === 'cicada-api') return this
-  try {
+    // Check kernel compatability
+    if (httpKernelVersion && !httpKernelVersion.startsWith('0.3.')) {
+      const e = new Error(`Error in Desktop kernel version ${httpKernelVersion}`)
+      e.code = 'ERR_DESKTOP_INCOMPATIBLE_KERNEL'
+      // reject(e)
+      throw e
+    }
+    this.substrate = 'cicada-api'
+  }
+
+  const communicator = async () => {
+    console.log('communicator():this.substrate:', this.substrate)
+
+    // substrate already set, so just return
+    if (this.substrate === 'babbage-xdm' || this.substrate === 'cicada-api') return this
     if (typeof window.parent.postMessage === 'function') {
       // Use a promise with timeout
-      const ids = {}
-      // console.log('communicator():new Promise')
-      return new Promise((resolve, reject) => {
+      // const ids = {}
+      return new Promise((resolve) => {
         const id = Buffer.from(require('crypto').randomBytes(8)).toString('base64')
         window.addEventListener('message', async e => {
           if (e.data.type !== 'CWI' || !e.isTrusted || e.data.id !== id) return
@@ -22,61 +40,35 @@ const communicator = async () => {
             if (!xdmKernelVersion.startsWith('0.3.')) {
               const e = new Error(`Error in XDM kernel version ${xdmKernelVersion}`)
               e.code = 'ERR_XDM_INCOMPATIBLE_KERNEL'
-              // reject(e)
               throw e
             }
             // console.log('communicator():xdmKernelVersion:', xdmKernelVersion)
             this.substrate = 'babbage-xdm'
           } else {
-            const httpKernelVersion = await makeHttpRequest(
-              'http://localhost:3301/v1/version',
-              {
-                method: 'get',
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              }
-            )
-            console.log('communicator():httpKernelVersion:', httpKernelVersion)
-
-            // Check kernel compatability
-            if (httpKernelVersion && !httpKernelVersion.startsWith('0.3.')) {
-              const e = new Error(`Error in Desktop kernel version ${httpKernelVersion}`)
-              e.code = 'ERR_DESKTOP_INCOMPATIBLE_KERNEL'
-              // reject(e)
-              throw e
-            }
-            this.substrate = 'cicada-api'
+            httpGetVersion()
           }
           console.log('communicator():this.substrate:', this.substrate)
           resolve(this)
         })
+
+        // Get the parent version to check its compatability
         console.log('communicator():id:', id)
         window.parent.postMessage({
           type: 'CWI',
           id,
           call: 'getVersion'
         }, '*')
-        /*
-        ids[id] = result => {
-          console.log('communicator():before resolve(result):result', result)
-          resolve(this)
-          // console.log('communicator():after resolve(result):ids:', ids)
-          // delete ids[id]
-          // xdmKernelVersion = result
-          // console.log('1 communicator():xdmKernelVersion:', xdmKernelVersion)
-          // Check kernel compatability
-        }
-        */
       })
-      // console.log('2 communicator():xdmKernelVersion:', xdmKernelVersion)
+    } else {
+      console.log('communicator():direct call httpGetVersion()')
+      httpGetVersion()
+      return this
     }
-  } catch (e) {
-    console.log(e)
-    const e_ = new Error('Error the user does not have a current Babbage identity')
-    e_.code = 'ERR_NO_METANET_IDENTITY'
-    throw e_
   }
+  module.exports = communicator
+} catch (e) {
+  console.log(e)
+  const e_ = new Error('Error the user does not have a current Babbage identity')
+  e_.code = 'ERR_NO_METANET_IDENTITY'
+  throw e_
 }
-
-module.exports = communicator
