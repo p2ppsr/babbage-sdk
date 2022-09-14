@@ -1,35 +1,40 @@
 const makeHttpRequest = require('./makeHttpRequest')
-try {
-  const httpGetVersion = async () => {
-    const httpKernelVersion = await makeHttpRequest(
-      'http://localhost:3301/v1/version',
-      {
-        method: 'get',
-        headers: {
-          'Content-Type': 'application/json'
-        }
+const httpGetVersion = async () => {
+  const httpKernelVersion = await makeHttpRequest(
+    'http://localhost:3301/v1/version',
+    {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json'
       }
-    )
-    console.log('communicator():httpKernelVersion:', httpKernelVersion)
-
-    // Check kernel compatability
-    if (httpKernelVersion && !httpKernelVersion.startsWith('0.3.')) {
-      const e = new Error(`Error in Desktop kernel version ${httpKernelVersion}`)
-      e.code = 'ERR_DESKTOP_INCOMPATIBLE_KERNEL'
-      // reject(e)
-      throw e
     }
-    this.substrate = 'cicada-api'
-  }
+  )
+  console.log('communicator():httpKernelVersion:', httpKernelVersion)
 
-  const communicator = async () => {
-    console.log('communicator():this.substrate:', this.substrate)
+  // Check kernel compatability
+  if (httpKernelVersion && !httpKernelVersion.startsWith('0.3.')) {
+    const e = new Error(`Error in Desktop kernel version ${httpKernelVersion}`)
+    e.code = 'ERR_DESKTOP_INCOMPATIBLE_KERNEL'
+    // reject(e)
+    throw e
+  }
+  this.substrate = 'cicada-api'
+}
+
+const communicator = async () => {
+  console.log('communicator():this.substrate:', this.substrate)
+  try {
 
     // substrate already set, so just return
     if (this.substrate === 'babbage-xdm' || this.substrate === 'cicada-api') return this
-    if (typeof window.parent.postMessage === 'function') {
-      // Use a promise with timeout
-      // const ids = {}
+      console.log('communicator():window.parent:', window.parent)
+      console.log('communicator():window.parent.name:', window.parent.name)
+
+      // TODO: Need a quick way to differenciate between running inside Prosperity and normal browser window
+      // Using window.name raises a DOMException: Permission denied to access property "name" on cross-origin object
+      // if (window.parent.name === 'Prosperity') {
+
+      // TODO need 200ms timeout
       return new Promise((resolve) => {
         const id = Buffer.from(require('crypto').randomBytes(8)).toString('base64')
         window.addEventListener('message', async e => {
@@ -45,7 +50,8 @@ try {
             // console.log('communicator():xdmKernelVersion:', xdmKernelVersion)
             this.substrate = 'babbage-xdm'
           } else {
-            httpGetVersion()
+            console.log('communicator():in Promise call httpGetVersion()')
+            await httpGetVersion()
           }
           console.log('communicator():this.substrate:', this.substrate)
           resolve(this)
@@ -59,16 +65,18 @@ try {
           call: 'getVersion'
         }, '*')
       })
-    } else {
-      console.log('communicator():direct call httpGetVersion()')
-      httpGetVersion()
-      return this
-    }
+    // TODO: See above
+    // } else {
+    //  console.log('communicator():direct call httpGetVersion()')
+    //  await httpGetVersion()
+    //  return this
+    //}
+  } catch (e) {
+    console.error(e)
+    const e_ = new Error('Error the user does not have a current Babbage identity')
+    e_.code = 'ERR_NO_METANET_IDENTITY'
+    throw e_
   }
-  module.exports = communicator
-} catch (e) {
-  console.log(e)
-  const e_ = new Error('Error the user does not have a current Babbage identity')
-  e_.code = 'ERR_NO_METANET_IDENTITY'
-  throw e_
 }
+
+module.exports = communicator
