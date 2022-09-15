@@ -15,24 +15,19 @@ const httpGetVersion = async () => {
   if (httpKernelVersion && !httpKernelVersion.startsWith('0.3.')) {
     const e = new Error(`Error in Desktop kernel version ${httpKernelVersion}`)
     e.code = 'ERR_DESKTOP_INCOMPATIBLE_KERNEL'
-    // reject(e)
     throw e
   }
   this.substrate = 'cicada-api'
 }
 
 const communicator = async () => {
-  console.log('communicator():this.substrate:', this.substrate)
+  // console.log('communicator():this.substrate:', this.substrate)
   try {
     // substrate already set, so just return
     if (this.substrate === 'babbage-xdm' || this.substrate === 'cicada-api') return this
 
-    // TODO: Need a quick way to differenciate between running inside Prosperity and normal browser window
-    // Using window.name raises a DOMException: Permission denied to access property "name" on cross-origin object
-    // if (window.parent.name === 'Prosperity') {
-
     // TODO need 200ms timeout
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const id = Buffer.from(require('crypto').randomBytes(8)).toString('base64')
       window.addEventListener('message', async e => {
         if (e.data.type !== 'CWI' || !e.isTrusted || e.data.id !== id) return
@@ -42,6 +37,7 @@ const communicator = async () => {
           if (!xdmKernelVersion.startsWith('0.3.')) {
             const e = new Error(`Error in XDM kernel version ${xdmKernelVersion}`)
             e.code = 'ERR_XDM_INCOMPATIBLE_KERNEL'
+            reject(e)
             throw e
           }
           // console.log('communicator():xdmKernelVersion:', xdmKernelVersion)
@@ -69,7 +65,7 @@ const communicator = async () => {
     // }
   } catch (e) {
     console.error(e)
-    const e_ = new Error('Error the user does not have a current Babbage identity')
+    const e_ = new Error('The user does not have a current Babbage identity')
     e_.code = 'ERR_NO_METANET_IDENTITY'
     throw e_
   }

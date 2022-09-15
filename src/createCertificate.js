@@ -2,34 +2,41 @@ const communicator = require('./utils/communicator')
 const makeHttpRequest = require('./utils/makeHttpRequest')
 
 /**
- * Returns found certificates
+ * Creates a signed certificate
  * @param {Object} obj All parameters for this function are provided in an object
- * @param {Array<string>} [obj.certifiers] The certifiers to filter certificates by
- * @param {Array<string>} [obj.types] The certificate types to filter certificates by
- * @returns {Promise<Object>} An object containing the found certificates
+ * @param {string} obj.certificateType The type of certificate to create
+ * @param {Object} obj.fieldObject The fields to add to the certificate
+ * @param {string} obj.certifierUrl The URL of the certifier signing the certificate
+ * @param {string} obj.certifierPublicKey The public identity key of the certifier signing the certificate
+ * @returns {Promise<Object>} A signed certificate
  */
 module.exports = async ({
-  certifiers, types
+  certificateType,
+  fieldObject,
+  certifierUrl,
+  certifierPublicKey
 }) => {
-  let com // Has to be declared as variable because we need to test it inside the catch
+    let com // Has to be declared as variable because we need to test it inside the catch
   try {
     com = await communicator()
     if (com.substrate === 'cicada-api') {
-      const httpResult = await makeHttpRequest(
-        'http://localhost:3301/v1/ninja/findCertificates',
-        {
-          method: 'post',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            certifiers,
-            types
-          })
-        }
-      )
-      return httpResult
+  const httpResult = await makeHttpRequest(
+    'http://localhost:3301/v1/createCertificate',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        certificateType,
+        fieldObject,
+        certifierUrl,
+        certifierPublicKey
+      })
     }
+  )
+      return httpResult
+      }
     if (com.substrate === 'babbage-xdm') {
       const ids = {}
       return new Promise(resolve => {
@@ -43,10 +50,12 @@ module.exports = async ({
         window.parent.postMessage({
           type: 'CWI',
           id,
-          call: 'getCertificates',
+          call: 'createCertificate',
           params: {
-            certifiers,
-            types
+            certificateType,
+            fieldObject,
+            certifierUrl,
+            certifierPublicKey
           }
         }, '*')
       })

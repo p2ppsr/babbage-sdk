@@ -1,35 +1,38 @@
-const communicator = require('./utils/communicator')
 const makeHttpRequest = require('./utils/makeHttpRequest')
 
 /**
- * Returns found certificates
+ * Creates certificate proof specifically for verifier
  * @param {Object} obj All parameters for this function are provided in an object
- * @param {Array<string>} [obj.certifiers] The certifiers to filter certificates by
- * @param {Array<string>} [obj.types] The certificate types to filter certificates by
- * @returns {Promise<Object>} An object containing the found certificates
+ * @param {Object} obj.certificate The certificate to prove
+ * @param {Array<string>} [obj.fieldsToReveal] The names of the fields to reveal to the verifier
+ * @param {string} obj.verifierPublicIdentityKey The public identity key of the verifier
+ * @returns {Promise<Object>} A certificate for presentation to the verifier for field examination
  */
 module.exports = async ({
-  certifiers, types
+  certificate,
+  fieldsToReveal,
+  verifierPublicIdentityKey
 }) => {
   let com // Has to be declared as variable because we need to test it inside the catch
   try {
     com = await communicator()
     if (com.substrate === 'cicada-api') {
-      const httpResult = await makeHttpRequest(
-        'http://localhost:3301/v1/ninja/findCertificates',
-        {
-          method: 'post',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            certifiers,
-            types
-          })
-        }
-      )
-      return httpResult
+  const httpResult = await makeHttpRequest(
+    'http://localhost:3301/v1/proveCertificate',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        certificate,
+        fieldsToReveal,
+        verifierPublicIdentityKey
+      })
     }
+  )
+      return httpResult
+      }
     if (com.substrate === 'babbage-xdm') {
       const ids = {}
       return new Promise(resolve => {
@@ -43,10 +46,11 @@ module.exports = async ({
         window.parent.postMessage({
           type: 'CWI',
           id,
-          call: 'getCertificates',
+          call: 'proveCertificate',
           params: {
-            certifiers,
-            types
+            certificate,
+            fieldsToReveal,
+            verifierPublicIdentityKey
           }
         }, '*')
       })
