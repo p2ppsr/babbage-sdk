@@ -119,6 +119,8 @@ const decryptedData = await decrypt({
     *   [Parameters](#parameters-9)
 *   [proveCertificate](#provecertificate)
     *   [Parameters](#parameters-10)
+*   [submitDirectTransaction](#submitdirecttransaction)
+    *   [Parameters](#parameters-11)
 
 ### createAction
 
@@ -322,6 +324,23 @@ Creates certificate proof specifically for verifier
     *   `obj.verifierPublicIdentityKey` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The public identity key of the verifier
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** A certificate for presentation to the verifier for field examination
+
+### submitDirectTransaction
+
+Submits a transaction directly to a ninja
+
+#### Parameters
+
+*   `obj` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters for this function are provided in an object
+
+    *   `obj.protocol` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Specify the transaction submission payment protocol to use. Currently, the only supported protocol is that with BRFC ID "3241645161d8"
+    *   `obj.transaction` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** The transaction envelope to submit, including key derivation information
+    *   `obj.senderIdentityKey` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Provide the identity key for the person who sent the transaction
+    *   `obj.note` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Human-readable description for the transaction
+    *   `obj.amount` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Amount of satoshis associated with the transaction
+    *   `obj.derivationPrefix` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** A derivation prefix used for all outputs. If provided, derivation prefixes on all outputs are optional.
+
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** Object containing reference number, status=success, and human-readable note acknowledging the transaction
 
 ## License
 
