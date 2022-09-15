@@ -1,6 +1,7 @@
 /* eslint-env jest */
 const BabbageSDK = require('../index')
 // Tests makeHttpRequest.js is handling basic errors correctly for every route
+jest.setTimeout(90000)
 describe('babbage-sdk-routes', () => {
   beforeEach(() => {
 

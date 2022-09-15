@@ -1,3 +1,4 @@
+const communicator = require('./utils/communicator')
 const makeHttpRequest = require('./utils/makeHttpRequest')
 /**
  * Decrypts data with a key belonging to the user. The same protocolID, keyID, counterparty and privileged parameters that were used during encryption must be used to successfully decrypt.
@@ -22,21 +23,59 @@ module.exports = async ({
   privileged = false,
   returnType = 'Uint8Array'
 }) => {
-  const result = await makeHttpRequest(
-    'http://localhost:3301/v1/decrypt' +
-     `?protocolID=${encodeURIComponent(protocolID)}` +
-     `&keyID=${encodeURIComponent(keyID)}` +
-     `&description=${encodeURIComponent(description)}` +
-     `&counterparty=${encodeURIComponent(counterparty)}` +
-     `&privileged=${encodeURIComponent(privileged)}` +
-     `&returnType=${encodeURIComponent(returnType)}`,
-    {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/octet-stream'
-      },
-      body: ciphertext
+  let com // Has to be declared as variable because we need to test it inside the catch
+  try {
+    com = await communicator()
+    if (com.substrate === 'cicada-api') {
+      const httpResult = await makeHttpRequest(
+        'http://localhost:3301/v1/decrypt' +
+        `?protocolID=${encodeURIComponent(protocolID)}` +
+        `&keyID=${encodeURIComponent(keyID)}` +
+        `&description=${encodeURIComponent(description)}` +
+        `&counterparty=${encodeURIComponent(counterparty)}` +
+        `&privileged=${encodeURIComponent(privileged)}` +
+        `&returnType=${encodeURIComponent(returnType)}`,
+        {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/octet-stream'
+          },
+          body: ciphertext
+        }
+      )
+      return httpResult
     }
-  )
-  return result
+    if (com.substrate === 'babbage-xdm') {
+      const ids = {}
+      return new Promise(resolve => {
+        const id = Buffer.from(require('crypto').randomBytes(8)).toString('base64')
+        window.addEventListener('message', async e => {
+          if (e.data.type !== 'CWI' || !e.isTrusted || e.data.id !== id) return
+          ids[id] = e.data.result
+          resolve(e.data.result)
+          delete ids[id]
+        })
+        window.parent.postMessage({
+          type: 'CWI',
+          id,
+          call: 'decrypt',
+          params: {
+            ciphertext,
+            protocolID,
+            keyID,
+            description,
+            counterparty,
+            privileged,
+            returnType
+          }
+        }, '*')
+      })
+    }
+  } catch (e) {
+    if (e.code === 'ERR_NO_METANET_IDENTITY' && com.substrate === 'babbage-xdm') {
+      // TODO: If substrate is babbage-xdm then send message to parent and call CWI.initialize()
+    } else {
+      console.error(e)
+    }
+  }
 }
