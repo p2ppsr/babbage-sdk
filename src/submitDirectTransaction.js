@@ -2,7 +2,7 @@ const communicator = require('./utils/communicator')
 const makeHttpRequest = require('./utils/makeHttpRequest')
 
 /**
- * Submits a direct transaction to a ninja
+ * Submits a transaction directly to a ninja
  * @param {Object} obj All parameters for this function are provided in an object
  * @param {string} obj.protocol Specify the transaction submission payment protocol to use. Currently, the only supported protocol is that with BRFC ID "3241645161d8"
  * @param {Object} obj.transaction The transaction envelope to submit, including key derivation information
