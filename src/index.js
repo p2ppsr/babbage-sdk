@@ -12,5 +12,6 @@ module.exports = {
   waitForAuthentication: require('./waitForAuthentication'),
   createCertificate: require('./createCertificate'),
   getCertificates: require('./getCertificates'),
-  proveCertificate: require('./proveCertificate')
+  proveCertificate: require('./proveCertificate'),
+  submitDirectTransaction: require('./submitDirectTransaction')
 }
