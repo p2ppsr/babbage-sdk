@@ -14,7 +14,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "lint": "standard --fix src/**/*.js"
+    "lint": "standard --fix ."
   },
   "bugs": {
     "url": "https://github.com/p2ppsr/babbage-sdk/issues"

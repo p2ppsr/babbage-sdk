@@ -16,27 +16,27 @@ module.exports = async ({
   certifierUrl,
   certifierPublicKey
 }) => {
-    let com // Has to be declared as variable because we need to test it inside the catch
+  let com // Has to be declared as variable because we need to test it inside the catch
   try {
     com = await communicator()
     if (com.substrate === 'cicada-api') {
-  const httpResult = await makeHttpRequest(
-    'http://localhost:3301/v1/createCertificate',
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        certificateType,
-        fieldObject,
-        certifierUrl,
-        certifierPublicKey
-      })
-    }
-  )
+      const httpResult = await makeHttpRequest(
+        'http://localhost:3301/v1/createCertificate',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            certificateType,
+            fieldObject,
+            certifierUrl,
+            certifierPublicKey
+          })
+        }
+      )
       return httpResult
-      }
+    }
     if (com.substrate === 'babbage-xdm') {
       const ids = {}
       return new Promise(resolve => {

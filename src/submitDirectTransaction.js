@@ -13,12 +13,12 @@ const makeHttpRequest = require('./utils/makeHttpRequest')
  * @returns {Promise<Object>} Object containing reference number, status=success, and human-readable note acknowledging the transaction
  */
 module.exports = async ({
-    protocol,
-    transaction,
-    senderIdentityKey,
-    note,
-    amount,
-    derivationPrefix
+  protocol,
+  transaction,
+  senderIdentityKey,
+  note,
+  amount,
+  derivationPrefix
 }) => {
   let com // Has to be declared as variable because we need to test it inside the catch
   try {

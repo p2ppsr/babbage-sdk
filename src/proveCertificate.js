@@ -1,4 +1,5 @@
 const makeHttpRequest = require('./utils/makeHttpRequest')
+const communicator = require('./utils/communicator')
 
 /**
  * Creates certificate proof specifically for verifier
@@ -17,22 +18,22 @@ module.exports = async ({
   try {
     com = await communicator()
     if (com.substrate === 'cicada-api') {
-  const httpResult = await makeHttpRequest(
-    'http://localhost:3301/v1/proveCertificate',
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        certificate,
-        fieldsToReveal,
-        verifierPublicIdentityKey
-      })
-    }
-  )
+      const httpResult = await makeHttpRequest(
+        'http://localhost:3301/v1/proveCertificate',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            certificate,
+            fieldsToReveal,
+            verifierPublicIdentityKey
+          })
+        }
+      )
       return httpResult
-      }
+    }
     if (com.substrate === 'babbage-xdm') {
       const ids = {}
       return new Promise(resolve => {
