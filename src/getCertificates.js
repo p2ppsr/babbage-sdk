@@ -5,7 +5,7 @@ const makeHttpRequest = require('./utils/makeHttpRequest')
  * Returns found certificates
  * @param {Object} obj All parameters for this function are provided in an object
  * @param {Array<string>} [obj.certifiers] The certifiers to filter certificates by
- * @param {Array<string>} [obj.types] The certificate types to filter certificates by
+ * @param {Object} [obj.types] The certificate types to filter certificates by, given as an object whose keys are types and whose values are arrays of fields to request from certificates of the given type.
  * @returns {Promise<Object>} An object containing the found certificates
  */
 module.exports = async ({
