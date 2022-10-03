@@ -43,7 +43,7 @@ module.exports = async ({
         window.parent.postMessage({
           type: 'CWI',
           id,
-          call: 'getCertificates',
+          call: 'ninja.findCertificates',
           params: {
             certifiers,
             types
