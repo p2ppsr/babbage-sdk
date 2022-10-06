@@ -1,23 +1,26 @@
 const makeHttpRequest = require('./makeHttpRequest')
 const httpGetVersion = async () => {
-  const httpKernelVersion = await makeHttpRequest(
-    'http://localhost:3301/v1/version',
-    {
-      method: 'get',
-      headers: {
-        'Content-Type': 'application/json'
+  try {
+    const httpKernelVersion = await makeHttpRequest(
+      'http://localhost:3301/v1/version',
+      {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json'
+        }
       }
-    }
-  )
-  // console.log('communicator():httpKernelVersion:', httpKernelVersion)
+    )
 
-  // Check kernel compatability
-  if (httpKernelVersion && !httpKernelVersion.startsWith('0.3.')) {
-    const e = new Error(`Error in Desktop kernel version ${httpKernelVersion}`)
-    e.code = 'ERR_DESKTOP_INCOMPATIBLE_KERNEL'
-    throw e
+    // Check kernel compatability
+    if (httpKernelVersion && !httpKernelVersion.startsWith('0.3.')) {
+      const e = new Error(`Error in Desktop kernel version ${httpKernelVersion}`)
+      e.code = 'ERR_DESKTOP_INCOMPATIBLE_KERNEL'
+      throw e
+    }
+    this.substrate = 'cicada-api'
+  } catch (error) {
+    console.error(`ERR_NO_METANET_IDENTITY: ${error}`)
   }
-  this.substrate = 'cicada-api'
 }
 
 const communicator = async () => {
