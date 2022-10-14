@@ -14,53 +14,44 @@ module.exports = async ({
   fieldsToReveal,
   verifierPublicIdentityKey
 }) => {
-  let com // Has to be declared as variable because we need to test it inside the catch
-  try {
-    com = await communicator()
-    if (com.substrate === 'cicada-api') {
-      const httpResult = await makeHttpRequest(
-        'http://localhost:3301/v1/proveCertificate',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            certificate,
-            fieldsToReveal,
-            verifierPublicIdentityKey
-          })
-        }
-      )
-      return httpResult
-    }
-    if (com.substrate === 'babbage-xdm') {
-      const ids = {}
-      return new Promise(resolve => {
-        const id = Buffer.from(require('crypto').randomBytes(8)).toString('base64')
-        window.addEventListener('message', async e => {
-          if (e.data.type !== 'CWI' || !e.isTrusted || e.data.id !== id) return
-          ids[id] = e.data.result
-          resolve(e.data.result)
-          delete ids[id]
+  const com = await communicator()
+  if (com.substrate === 'cicada-api') {
+    const httpResult = await makeHttpRequest(
+      'http://localhost:3301/v1/proveCertificate',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          certificate,
+          fieldsToReveal,
+          verifierPublicIdentityKey
         })
-        window.parent.postMessage({
-          type: 'CWI',
-          id,
-          call: 'proveCertificate',
-          params: {
-            certificate,
-            fieldsToReveal,
-            verifierPublicIdentityKey
-          }
-        }, '*')
+      }
+    )
+    return httpResult
+  }
+  if (com.substrate === 'babbage-xdm') {
+    const ids = {}
+    return new Promise(resolve => {
+      const id = Buffer.from(require('crypto').randomBytes(8)).toString('base64')
+      window.addEventListener('message', async e => {
+        if (e.data.type !== 'CWI' || !e.isTrusted || e.data.id !== id) return
+        ids[id] = e.data.result
+        resolve(e.data.result)
+        delete ids[id]
       })
-    }
-  } catch (e) {
-    if (e.code === 'ERR_NO_METANET_IDENTITY' && com.substrate === 'babbage-xdm') {
-      // TODO: If substrate is babbage-xdm then send message to parent and call CWI.initialize()
-    } else {
-      console.error(e)
-    }
+      window.parent.postMessage({
+        type: 'CWI',
+        id,
+        call: 'proveCertificate',
+        params: {
+          certificate,
+          fieldsToReveal,
+          verifierPublicIdentityKey
+        }
+      }, '*')
+    })
   }
 }
