@@ -1,4 +1,4 @@
-const communicator = require('./utils/communicator')
+const connectToSubstrate = require('./utils/connectToSubstrate')
 const makeHttpRequest = require('./utils/makeHttpRequest')
 /**
  * Encrypts data with a key belonging to the user. If a counterparty is provided, also allows the counterparty to decrypt the data. The same protocolID, keyID, counterparty and privileged parameters must be used when decrypting.
@@ -24,8 +24,8 @@ module.exports = async ({
   privileged = false,
   returnType = 'Uint8Array'
 }) => {
-  const com = await communicator()
-  if (com.substrate === 'cicada-api') {
+  const connection = await connectToSubstrate()
+  if (connection.substrate === 'cicada-api') {
     const httpResult = await makeHttpRequest(
       'http://localhost:3301/v1/encrypt' +
           `?protocolID=${encodeURIComponent(protocolID)}` +
@@ -43,7 +43,7 @@ module.exports = async ({
       }
     )
     return httpResult
-  } else if (com.substrate === 'babbage-xdm') {
+  } else if (connection.substrate === 'babbage-xdm') {
     return new Promise((resolve, reject) => {
       const id = Buffer.from(require('crypto').randomBytes(8)).toString('base64')
       window.addEventListener('message', async e => {

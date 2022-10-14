@@ -1,5 +1,5 @@
 const makeHttpRequest = require('./utils/makeHttpRequest')
-const communicator = require('./utils/communicator')
+const connectToSubstrate = require('./utils/connectToSubstrate')
 
 /**
  * Creates certificate proof specifically for verifier
@@ -14,8 +14,8 @@ module.exports = async ({
   fieldsToReveal,
   verifierPublicIdentityKey
 }) => {
-  const com = await communicator()
-  if (com.substrate === 'cicada-api') {
+  const connection = await connectToSubstrate()
+  if (connection.substrate === 'cicada-api') {
     const httpResult = await makeHttpRequest(
       'http://localhost:3301/v1/proveCertificate',
       {
@@ -31,7 +31,7 @@ module.exports = async ({
       }
     )
     return httpResult
-  } else if (com.substrate === 'babbage-xdm') {
+  } else if (connection.substrate === 'babbage-xdm') {
     return new Promise((resolve, reject) => {
       const id = Buffer.from(require('crypto').randomBytes(8)).toString('base64')
       window.addEventListener('message', async e => {
