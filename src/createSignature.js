@@ -41,16 +41,18 @@ module.exports = async ({
       }
     )
     return httpResult
-  }
-  if (com.substrate === 'babbage-xdm') {
-    const ids = {}
-    return new Promise(resolve => {
+  } else if (com.substrate === 'babbage-xdm') {
+    return new Promise((resolve, reject) => {
       const id = Buffer.from(require('crypto').randomBytes(8)).toString('base64')
       window.addEventListener('message', async e => {
         if (e.data.type !== 'CWI' || !e.isTrusted || e.data.id !== id) return
-        ids[id] = e.data.result
-        resolve(e.data.result)
-        delete ids[id]
+        if (e.data.status === 'error') {
+          const err = new Error(e.data.description)
+          err.code = e.data.code
+          reject(err)
+        } else {
+          resolve(e.data.result)
+        }
       })
       window.parent.postMessage({
         type: 'CWI',
