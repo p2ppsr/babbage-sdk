@@ -22,7 +22,7 @@ module.exports = async () => {
     return new Promise((resolve, reject) => {
       const id = Buffer.from(require('crypto').randomBytes(8)).toString('base64')
       window.addEventListener('message', async e => {
-        if (e.data.type !== 'CWI' || !e.isTrusted || e.data.id !== id) return
+        if (e.data.type !== 'CWI' || !e.isTrusted || e.data.id !== id || e.data.isInvocation) return
         if (e.data.status === 'error') {
           const err = new Error(e.data.description)
           err.code = e.data.code
@@ -33,6 +33,7 @@ module.exports = async () => {
       })
       window.parent.postMessage({
         type: 'CWI',
+        isInvocation: true,
         id,
         call: 'waitForAuthentication'
       }, '*')
