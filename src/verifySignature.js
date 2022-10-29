@@ -81,5 +81,20 @@ module.exports = async ({
         }
       }, '*')
     })
+  } else if (connection.substrate === 'window-api') {
+    return window.CWI.verifySignature({
+      data,
+      signature,
+      protocolID,
+      keyID,
+      description,
+      counterparty,
+      privileged,
+      reason
+    })
+  } else {
+    const e = new Error(`Unknown Babbage substrate: ${connection.substrate}`)
+    e.code = 'ERR_UNKNOWN_SUBSTRATE'
+    throw e
   }
 }

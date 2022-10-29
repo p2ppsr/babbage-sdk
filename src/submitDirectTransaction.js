@@ -57,7 +57,7 @@ module.exports = async ({
         type: 'CWI',
         isInvocation: true,
         id,
-        call: 'submitDirectTransaction',
+        call: 'ninja.submitDirectTransaction',
         params: {
           protocol,
           transaction,
@@ -68,5 +68,18 @@ module.exports = async ({
         }
       }, '*')
     })
+  } else if (connection.substrate === 'window-api') {
+    return window.CWI.ninja.submitDirectTransaction({
+      protocol,
+      transaction,
+      senderIdentityKey,
+      note,
+      amount,
+      derivationPrefix
+    })
+  } else {
+    const e = new Error(`Unknown Babbage substrate: ${connection.substrate}`)
+    e.code = 'ERR_UNKNOWN_SUBSTRATE'
+    throw e
   }
 }

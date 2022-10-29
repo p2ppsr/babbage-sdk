@@ -38,5 +38,11 @@ module.exports = async () => {
         call: 'isAuthenticated'
       }, '*')
     })
+  } else if (connection.substrate === 'window-api') {
+    return window.CWI.isAuthenticated()
+  } else {
+    const e = new Error(`Unknown Babbage substrate: ${connection.substrate}`)
+    e.code = 'ERR_UNKNOWN_SUBSTRATE'
+    throw e
   }
 }

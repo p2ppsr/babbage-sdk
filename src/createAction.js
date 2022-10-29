@@ -63,5 +63,17 @@ module.exports = async ({
         }
       }, '*')
     })
+  } else if (connection.substrate === 'window-api') {
+    return window.CWI.createAction({
+      inputs,
+      outputs,
+      description,
+      bridges,
+      labels
+    })
+  } else {
+    const e = new Error(`Unknown Babbage substrate: ${connection.substrate}`)
+    e.code = 'ERR_UNKNOWN_SUBSTRATE'
+    throw e
   }
 }

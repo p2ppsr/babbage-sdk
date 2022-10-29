@@ -68,5 +68,18 @@ module.exports = async ({
         }
       }, '*')
     })
+  } else if (connection.substrate === 'window-api') {
+    return window.CWI.getPublicKey({
+      protocolID,
+      keyID,
+      privileged,
+      identityKey,
+      reason,
+      counterparty
+    })
+  } else {
+    const e = new Error(`Unknown Babbage substrate: ${connection.substrate}`)
+    e.code = 'ERR_UNKNOWN_SUBSTRATE'
+    throw e
   }
 }
