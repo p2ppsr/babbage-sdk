@@ -33,6 +33,25 @@ const communicator = async () => {
     try {
       const id = Buffer.from(require('crypto')
         .randomBytes(8)).toString('base64')
+      /*
+        TODO: Rework the logic for XDM.
+        Currently, we are:
+        - sending an XDM message
+        - within the message handler, we ALWAYS see the OUTGOING (not incoming) XDM message. All the logic runs when the message is SENT, not when a response from any potential XDM responder would be received.
+        - Then, we check for the XDM response. This check ALWAYS fails, because we are handling the event from an OUTGOING XDM message.
+        - Then, we try to use HTTP, and failing that, we try to use window.CWI.
+        - If both HTTP and window.CWI fail, an error rejects the Promise.
+        - Therefore, no XDM support truly exists anymore.
+        - If an XDM responder DOES respond, then we have already most likely rejected the promise with an Error.
+        - It is still possible for XDM to work, if during the time the HTTP version request is in-flight, the message handler fires again with the INCOMING XDM message.
+        - In that case, the INCOMING message will pass the check, the substrate will be set to Babbage-XDM, the version will be assigned, and the Promise will be resolved successfully for XDM, all while the version HTTP request is in-flight.
+        - Then, the version request returns from being in-flight, and either resolves or rejects the Promise, and if it resolves, could overwrite this.substrate again, now to reflect HTTP for future requests, even though the first call had returned Babbage-XDM for the substrate.
+        - This is non-ideal, and should change.
+
+        What we need is a function that sends an XDM request, only allows the message handler to fire on INCOMING responses, waits for 200ms for any responders to send a response, and after 200ms will terminate the XDM request with an error. Otherwise, the message response handler would resolve the Promise with the correct version.
+
+        We can then call such a function at the beginning. If there is an error, we would try HTTP. If there was an error with HTTP, we would try to use window.CWI. If there was an error with window.CWI, we would throw ERR_NO_METANET_IDENTITY to the caller.
+      */
       window.addEventListener('message', async e => {
         try {
           if (e.data.type !== 'CWI' || !e.isTrusted || e.data.id !== id) return
