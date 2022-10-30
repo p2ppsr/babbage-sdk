@@ -4,89 +4,127 @@ Build Babbage apps in JavaScript
 
 **[NPM Package](https://www.npmjs.com/package/@babbage/sdk)**
 
-## Introduction
-
-This library provides a client-side authentication solution that will let your application access a few
-cryptographic keys that belong to your users. You can use these for client-side encryption/decryption,
-authentication, signing, or even creating Bitcoin transactions.
-
-### Data Ownership
-
-Traditionally, internet-based businesses have owned all their users' data. They use this data for advertising,
-analytics, tracking and many other purposes. This library enables a new model—a model in which the users
-themselves remain the sole owners and custodians of the data they generate with your application. The same user will always have the same set of keys, even if they recover their account or
-log in on a new device:
-
-Key Name            | Description
-\--------------------|-----------------------
-Primary Key         | Use this key for low-security symmetric cryptography
-Privileged Key      | Use this key for high-security symmetric cryptography
-
-### One Set of Keys per User
-
-Each user has one set of keys. Their keys can be used only on their devices and only with their permission.
-Generally, all of a user's applications will share a common set of keys. This makes it possible for multiple
-applications to access the same sets of data. For example, two competing Twetch UIs could compete in
-representing the same pieces of content.
-
-### No Server-side Access to Keys
-
-We take steps to protect the security of user keys, in an attempt to ensure that they are not exported or extracted. While
-it's not technologically impossible to steal a user's keys and send them to your servers, since you do not own
-the keys, exceeding your authorized level of access is a violation of the law in most countries.
-
-### Monetization
-
-How, then, are you to make money with your applications? When user data is encrypted and inaccessible,
-traditional ad-based monetization techniques don't work. We envision a new era of micropayment-based
-monetization schemes powered by a world-scale blockchain such as BSV. You could, for example, sell access to
-your API for 1000 satoshis per request. Ad-free video sharing platforms could charge $0.0001 per minute of
-video played, sending 80% to the creator of the video and 20% to the platform's owners. A music streaming
-service could charge $0.05 per song, splitting each payment in a similar way.
-
-### PKI-based User Certification
-
-Since a set of keys is tied directly to a user, they can get their keys endorsed by well-known public
-certificate authorities. For example, if MIT signed off whenever someone got a degree, you could trivially
-implement a social network exclusively for MIT graduates.
-
-### Differences between Primary and Privileged Keysets
-
-The primary keyset and the privileged keyset have the same properties, except that the privileged keyset is for
-use in more secure contexts. For example, if implementing a secure messaging application, the primary keyset
-should generally be used for most communications. When sending something like a "secret chat" or a "confidential attachment",
-the privileged keyset should be used to encrypt/decrypt or sign/verify the data.
-
-### Access to the Privileged keyset
-
-You can access `privilegedKey` and `privilegedSigning` with the functions defined in the API section below. If
-they haven't been accessed for more than the length of time defined by `privilegedKeyTimeout`, the
-user will need to enter their password in order to unlock the key. Therefore, the promises returned by
-functions that make use of privileged keysets may take 30+ seconds to resolve while the user enters their
-password.
+**[GitHub Repository](https://github.com/p2ppsr/babbage-sdk)**
 
 ## Installation
 
     npm i @babbage/sdk
 
+## By Example
+
+There are a few example projects you can check out which implement the Babbage SDK:
+
+*   **[🎵Tempo](https://github.com/p2ppsr/tempo)**: A platform for creating and sharing music, and empowering artists with micropayments
+*   **[✅Simple ToDo List](https://github.com/p2ppsr/todo-react)**: An app that demonstrates the basics of Bitcoin tokenization and identity
+
+## Documentation
+
+> 📒 The JavaScript API is documented below the examples, in the **API** section
+
+The **[📚Babbage Learn website](https://projectbabbage.com/docs/babbage-sdk)** hosts the concepts, guides and reference materials that show you how the SDK works.
+
 ## Example Usage
+
+### Encryption
 
 ```js
 const { encrypt, decrypt } = require('@babbage/sdk')
 
-// Encrypt and decrypt data using the BabbageSDK
+// Encrypt and decrypt data using the Babbage SDK
 const encryptedData = await encrypt({
-    plaintext: Buffer.from('some data'),
-    protocolID: 'Hello World',
-    keyID: '1',
-  })
+  plaintext: Buffer.from('some data'),
+  protocolID: [0, 'Hello World'],
+  keyID: '1'
+})
+
+// The same protocol and key ID is needed for decryption
 const decryptedData = await decrypt({
-    ciphertext: encryptedData,
-    protocolID: 'Hello World',
-    keyID: '1',
-    returnType: 'string'
-  })
+  ciphertext: encryptedData,
+  protocolID: [0, 'Hello World'],
+  keyID: '1',
+  returnType: 'string'
+})
 ```
+
+### Creating and Redeeming Bitcoin tokens
+
+> This example also uses [PushDrop](https://github.com/p2ppsr/pushdrop)
+
+```js
+const { createAction } = require('@babbage/sdk')
+const { create, redeem } = require('pushdrop')
+
+const bitcoinOutputScript = await create({
+  fields: [ // The "fields" are the data payload to attach to the token.
+    Buffer.from('My First Token'),
+    Buffer.from('My name is Ty') // Tokens can represent anything!
+  ],
+  // The "first token" protocol and key ID can be used to sign and 
+  // lock this new Bitcoin PushDrop token.
+  protocolID: 'first token',
+  keyID: '1'
+})
+
+const newToken = await createAction({
+  // The Bitcoin transaction ("Action" with a capital A) has an output, 
+  // because it has led to the creation of a new Bitcoin token.
+  outputs: [{
+    // The output amount is how much Bitcoin (measured in "satoshis") 
+    // this token is worth. Let's use 1000 satoshis.
+    satoshis: 1000,
+    // The output script for this token was created by the PushDrop library, 
+    // which you can see above.
+    script: bitcoinOutputScript
+  }],
+  // Finally, we'll describe the Action for the user
+  description: 'Create my first token'
+})
+
+// Here, we're using the PushDrop library to unlcok / redeem the PushDrop 
+// token that was previously created. By providing this information, 
+// PushDrop can "unlock" and spend the token. When the token gets spent, 
+// the user gets their 1000 satoshis back.
+const unlockingScript = await pushdrop.redeem({
+  // To unlock the token, we need to use the same "first token" protocol 
+  // and key ID as when we created the token before. Otherwise, the 
+  // key won't fit the lock and the Bitcoins won't come out.
+  protocolID: 'first token',
+  keyID: '1',
+  // We're telling PushDrop which previous transaction and output we want to
+  // unlock, so that the correct unlocking puzzle can be prepared.
+  prevTxId: newToken.txid,
+  outputIndex: 0, // The first output from the transaction
+  // We also give PushDrop a copy of the locking puzzle ("script") that 
+  // we want to open, which is helpful in preparing to unlock it.
+  lockingScript: bitcoinOutputScript,
+  // Finally, the number of satoshis we are expecting to unlock when the 
+  // puzzle gets solved.
+  outputAmount: 1000
+})
+
+// Now, we're going to use the unlocking puzle that PushDrop has prepared for us,
+// so that the user can get their Bitcoins back. This is another "Action", which
+// is just a Bitcoin transaction.
+// The amount the user gets back will be slightly less, because of transaction fees.
+await createAction({
+  inputs: { // These are inputs, which unlock Bitcoin tokens.
+    // The input comes from the token which we're completing
+    [newToken.txid]: {
+      ...newToken,
+      // The output we want to redeem is specified here, and we also give 
+      // the unlocking puzzle ("script") from PushDrop.
+      outputsToRedeem: [{
+        index: 0, // The first output of the transaction
+        unlockingScript
+      }]
+    }
+  },
+  // Let the user know why they're getting some Bitcoins back
+  description: 'Redeem my first token'
+})
+```
+
+> ❓ After reading the above two examples, could you implement a token with encrypted data?
 
 ## API
 
@@ -98,29 +136,34 @@ const decryptedData = await decrypt({
     *   [Parameters](#parameters)
 *   [createHmac](#createhmac)
     *   [Parameters](#parameters-1)
-*   [createSignature](#createsignature)
+*   [getWindowVersion](#getwindowversion)
+*   [getXDMVersion](#getxdmversion)
+*   [getHTTPVersion](#gethttpversion)
+*   [promiseWithTimeout](#promisewithtimeout)
     *   [Parameters](#parameters-2)
-*   [decrypt](#decrypt)
+*   [createSignature](#createsignature)
     *   [Parameters](#parameters-3)
-*   [encrypt](#encrypt)
+*   [decrypt](#decrypt)
     *   [Parameters](#parameters-4)
-*   [getPublicKey](#getpublickey)
+*   [encrypt](#encrypt)
     *   [Parameters](#parameters-5)
+*   [getPublicKey](#getpublickey)
+    *   [Parameters](#parameters-6)
 *   [getVersion](#getversion)
 *   [isAuthenticated](#isauthenticated)
 *   [verifyHmac](#verifyhmac)
-    *   [Parameters](#parameters-6)
-*   [verifySignature](#verifysignature)
     *   [Parameters](#parameters-7)
+*   [verifySignature](#verifysignature)
+    *   [Parameters](#parameters-8)
 *   [waitForAuthentication](#waitforauthentication)
 *   [createCertificate](#createcertificate)
-    *   [Parameters](#parameters-8)
-*   [getCertificates](#getcertificates)
     *   [Parameters](#parameters-9)
-*   [proveCertificate](#provecertificate)
+*   [getCertificates](#getcertificates)
     *   [Parameters](#parameters-10)
-*   [submitDirectTransaction](#submitdirecttransaction)
+*   [proveCertificate](#provecertificate)
     *   [Parameters](#parameters-11)
+*   [submitDirectTransaction](#submitdirecttransaction)
+    *   [Parameters](#parameters-12)
 
 ### createAction
 
@@ -154,6 +197,33 @@ Creates a SHA-256 HMAC with a key belonging to the user.
     *   `args.privileged` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** This indicates whether the privileged keyring should be used for the HMAC, as opposed to the primary keyring. (optional, default `false`)
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Uint8Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array)>** The SHA-256 HMAC of the data.
+
+### getWindowVersion
+
+Obtains the version by using the local window.CWI instance.
+Fails of no CWI instance exists within the local window.
+
+### getXDMVersion
+
+Uses cross-document messaging to obtain a substrate connection.
+Fails after 200ms if no version response is received.
+
+### getHTTPVersion
+
+Uses the HTTP local port 3301 API to request the version.
+Fails if HTTP errors are encountered, or no server is running.
+
+### promiseWithTimeout
+
+Provides a timedout promise.
+
+#### Parameters
+
+*   `obj` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters for this function are provided in an object
+
+    *   `obj.timeout` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Timeout in milliseconds, promise interupted, control returned, if not completed after `timeout` milliseconds.
+    *   `obj.promise` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** The promised function to be run to completion or interupted, control returned, after `timeout` milliseconds.
+    *   `obj.error` **[Error](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error)** The error that is thrown if the time expires.
 
 ### createSignature
 
@@ -341,6 +411,14 @@ Submits a transaction directly to a ninja
     *   `obj.derivationPrefix` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** A derivation prefix used for all outputs. If provided, derivation prefixes on all outputs are optional.
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** Object containing reference number, status=success, and human-readable note acknowledging the transaction
+
+## SDK Connection Substrates
+
+The Babbage SDK connects to a running *Computing with Integrity* (CWI) kernel instance, allowing applications to plug into user-owned identities. There are currently three *substrates* (connection modes) that the SDK can use to link an application to a MetaNet identity provider:
+
+1.  **Window API**: In a web browser, the SDK will first try to use a `window.CWI` interface for communicating with the kernel.
+2.  **Babbage XDM**: In a browser or iframe window, the SDK will next try to use XDM (cross-document messaging) to communicate with a running kernel instance.
+3.  **Cicada API**: Lastly, the SDK will attempt to communicate over `localhost:3301` to a running HTTP MetaNet service. This *Port 3301 Substrate* is named Cicada, in honor of [Cicada 3301](https://en.wikipedia.org/wiki/Cicada_3301).
 
 ## License
 
