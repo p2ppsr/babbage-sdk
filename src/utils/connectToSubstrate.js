@@ -1,12 +1,33 @@
-const { isNode } = require('browser-or-node')
 const makeHttpRequest = require('./makeHttpRequest')
+
+const noIdentityErrorMessage = 'The user does not have a current Babbage identity'
 
 const communicator = async () => {
   // substrate already set, so just return
-  if (this.substrate === 'babbage-xdm' || this.substrate === 'cicada-api') return this
-  if (isNode) { // Node always uses HTTP
-    this.substrate = 'cicada-api'
+  if (
+    this.substrate === 'babbage-xdm' ||
+    this.substrate === 'cicada-api' ||
+    this.substrate === 'window-api'
+  ) {
     return this
+  }
+  if (typeof window !== 'object') { // Node always uses HTTP
+    try {
+      this.version = await makeHttpRequest(
+        'http://localhost:3301/v1/version',
+        {
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+      this.substrate = 'cicada-api'
+      return this
+    } catch (_) {
+      const err = new Error(noIdentityErrorMessage)
+      err.code = 'ERR_NO_METANET_IDENTITY'
+    }
   }
   return new Promise((resolve, reject) => {
     try {
@@ -72,7 +93,7 @@ const communicator = async () => {
         call: 'getVersion'
       }, '*')
     } catch (_) {
-      const err = new Error('The user does not have a current Babbage identity')
+      const err = new Error(noIdentityErrorMessage)
       err.code = 'ERR_NO_METANET_IDENTITY'
       reject(err)
     }
