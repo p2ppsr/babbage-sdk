@@ -124,7 +124,7 @@ await createAction({
 })
 ```
 
-> 🏆 After reading the above two examples, could you implement a token with encrypted data?
+> 🏆 After reading the above two examples, could you implement a token with encrypted data? 🏆
 
 ## API
 
