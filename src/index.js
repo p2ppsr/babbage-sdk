@@ -13,5 +13,6 @@ module.exports = {
   createCertificate: require('./createCertificate'),
   getCertificates: require('./getCertificates'),
   proveCertificate: require('./proveCertificate'),
-  submitDirectTransaction: require('./submitDirectTransaction')
+  submitDirectTransaction: require('./submitDirectTransaction'),
+  getTransactionOutputs: require('./getTransactionOutputs')
 }
