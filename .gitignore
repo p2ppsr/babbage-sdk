@@ -25,5 +25,4 @@ yarn-error.log*
 .env
 
 tmp
-dist
 .eslintrc.json
