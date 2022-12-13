@@ -16,7 +16,8 @@
     "test:coverage": "jest --coverage",
     "lint": "standard --fix .",
     "start": "webpack serve --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js"
+    "build": "webpack --config webpack.prod.js",
+    "prepublishOnly": "npm run build"
   },
   "bugs": {
     "url": "https://github.com/p2ppsr/babbage-sdk/issues"
