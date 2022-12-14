@@ -1,4 +1,7 @@
-const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
+const path = require('path')
+// Webpack Analyzer
+// const WebpackBundleAnalyzer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+// const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin')
 
 module.exports = {
   output: {
@@ -10,7 +13,6 @@ module.exports = {
     filename: 'sdk.js'
   },
   plugins: [
-    new NodePolyfillPlugin()
   ],
   module: {
     rules: [
@@ -24,9 +26,13 @@ module.exports = {
     ]
   },
   externals: {
-    "isomorphic-fetch": "isomorphic-fetch"
+    'isomorphic-fetch': 'isomorphic-fetch'
   },
   resolve: {
-    extensions: ['', '.js', '.jsx']
+    extensions: ['', '.js', '.jsx'],
+    alias: {
+      'bn.js': path.resolve(__dirname, 'node_modules/bn.js'),
+      'safe-buffer': path.resolve(__dirname, 'node_modules/safe-buffer')
+    }
   }
 }
