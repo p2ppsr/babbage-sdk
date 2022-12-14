@@ -23,6 +23,9 @@ module.exports = {
       }
     ]
   },
+  externals: {
+    "isomorphic-fetch": "isomorphic-fetch"
+  },
   resolve: {
     extensions: ['', '.js', '.jsx']
   }
