@@ -2,6 +2,7 @@ const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 
 module.exports = {
   output: {
+    globalObject: 'this',
     library: {
       type: 'umd',
       name: 'BabbageSDK'
