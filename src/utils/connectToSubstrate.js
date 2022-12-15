@@ -14,7 +14,7 @@ const getWindowVersion = () => window.CWI.getVersion()
 const getXDMVersion = () => {
   const versionPromise = new Promise((resolve, reject) => {
     try {
-      const id = Buffer.from(crypto.getRandomValues(new Uint8Array(8))).toString('base64')
+      const id = Buffer.from(getRandomID()).toString('base64')
       window.addEventListener('message', async e => {
         try {
           if
