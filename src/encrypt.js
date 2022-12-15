@@ -1,5 +1,6 @@
 const connectToSubstrate = require('./utils/connectToSubstrate')
 const makeHttpRequest = require('./utils/makeHttpRequest')
+const getRandomID = require('./utils/getRandomID')
 /**
  * Encrypts data with a key belonging to the user. If a counterparty is provided, also allows the counterparty to decrypt the data. The same protocolID, keyID, counterparty and privileged parameters must be used when decrypting.
  *
@@ -45,7 +46,7 @@ module.exports = async ({
     return httpResult
   } else if (connection.substrate === 'babbage-xdm') {
     return new Promise((resolve, reject) => {
-      const id = Buffer.from(require('crypto').randomBytes(8)).toString('base64')
+      const id = Buffer.from(getRandomID()).toString('base64')
       window.addEventListener('message', async e => {
         if (e.data.type !== 'CWI' || !e.isTrusted || e.data.id !== id || e.data.isInvocation) return
         if (e.data.status === 'error') {

@@ -1,5 +1,6 @@
 const connectToSubstrate = require('./utils/connectToSubstrate')
 const makeHttpRequest = require('./utils/makeHttpRequest')
+const getRandomID = require('./utils/getRandomID')
 /**
  * Creates a SHA-256 HMAC with a key belonging to the user.
  *
@@ -41,7 +42,7 @@ module.exports = async ({
     return httpResult
   } else if (connection.substrate === 'babbage-xdm') {
     return new Promise((resolve, reject) => {
-      const id = Buffer.from(require('crypto').randomBytes(8)).toString('base64')
+      const id = Buffer.from(getRandomID()).toString('base64')
       window.addEventListener('message', async e => {
         if (e.data.type !== 'CWI' || !e.isTrusted || e.data.id !== id || e.data.isInvocation) return
         if (e.data.status === 'error') {

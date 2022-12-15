@@ -1,5 +1,6 @@
 const connectToSubstrate = require('./utils/connectToSubstrate')
 const makeHttpRequest = require('./utils/makeHttpRequest')
+const getRandomID = require('./utils/getRandomID')
 
 /**
  * Returns a set of transaction outputs that Dojo has tracked
@@ -14,13 +15,13 @@ const makeHttpRequest = require('./utils/makeHttpRequest')
  * @returns {Promise<Array<TransactionOutputDescriptor>>} A set of outputs that match the criteria
  */
 module.exports = async ({
-    basket,
-    tracked,
-    includeEnvelope = false,
-    spendable,
-    type,
-    limit = 25,
-    offset = 0
+  basket,
+  tracked,
+  includeEnvelope = false,
+  spendable,
+  type,
+  limit = 25,
+  offset = 0
 }) => {
   const connection = await connectToSubstrate()
   if (connection.substrate === 'cicada-api') {
@@ -32,20 +33,20 @@ module.exports = async ({
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            basket,
-            tracked,
-            includeEnvelope,
-            spendable,
-            type,
-            limit,
-            offset
+          basket,
+          tracked,
+          includeEnvelope,
+          spendable,
+          type,
+          limit,
+          offset
         })
       }
     )
     return httpResult
   } else if (connection.substrate === 'babbage-xdm') {
     return new Promise((resolve, reject) => {
-      const id = Buffer.from(require('crypto').randomBytes(8)).toString('base64')
+      const id = Buffer.from(getRandomID()).toString('base64')
       window.addEventListener('message', async e => {
         if (e.data.type !== 'CWI' || !e.isTrusted || e.data.id !== id || e.data.isInvocation) return
         if (e.data.status === 'error') {
@@ -62,25 +63,25 @@ module.exports = async ({
         id,
         call: 'ninja.getTransactionOutputs',
         params: {
-            basket,
-            tracked,
-            includeEnvelope,
-            spendable,
-            type,
-            limit,
-            offset
+          basket,
+          tracked,
+          includeEnvelope,
+          spendable,
+          type,
+          limit,
+          offset
         }
       }, '*')
     })
   } else if (connection.substrate === 'window-api') {
     return window.CWI.ninja.getTransactionOutputs({
-        basket,
-        tracked,
-        includeEnvelope,
-        spendable,
-        type,
-        limit,
-        offset
+      basket,
+      tracked,
+      includeEnvelope,
+      spendable,
+      type,
+      limit,
+      offset
     })
   } else {
     const e = new Error(`Unknown Babbage substrate: ${connection.substrate}`)
