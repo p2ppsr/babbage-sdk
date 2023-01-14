@@ -12,6 +12,7 @@ const getRandomID = require('./utils/getRandomID')
  * @param {string} [args.identityKey=false] If true, the identity key will be returned, and no key derivation will be performed
  * @param {string} [args.reason] The reason for requiring access to the user's privilegedKey
  * @param {string} [args.counterparty=self] The counterparty to use for derivation. If provided, derives a public key for this counterparty, who can derive the corresponding private key.
+ * @param {boolean} [args.forSelf=false] Whether the derived child public key corresponds to a private key held by the current user.
  *
 * @returns {Promise<Object>} An object containing the user's public key
  */
@@ -21,7 +22,8 @@ module.exports = async ({
   privileged = false,
   identityKey = false,
   reason = 'No reason provided.',
-  counterparty = 'self'
+  counterparty = 'self',
+  forSelf = false
 }) => {
   const connection = await connectToSubstrate()
   if (connection.substrate === 'cicada-api') {
@@ -31,8 +33,9 @@ module.exports = async ({
         `&keyID=${encodeURIComponent(keyID)}` +
         `&privileged=${encodeURIComponent(privileged)}` +
         `&identityKey=${encodeURIComponent(identityKey)}` +
+        `&reason=${encodeURIComponent(reason)}` +
         `&counterparty=${encodeURIComponent(counterparty)}` +
-        `&reason=${encodeURIComponent(reason)}`,
+        `&forSelf=${encodeURIComponent(forSelf)}`,
       {
         method: 'get',
         headers: {
@@ -65,7 +68,8 @@ module.exports = async ({
           privileged,
           identityKey,
           reason,
-          counterparty
+          counterparty,
+          forSelf
         }
       }, '*')
     })
@@ -76,7 +80,8 @@ module.exports = async ({
       privileged,
       identityKey,
       reason,
-      counterparty
+      counterparty,
+      forSelf
     })
   } else {
     const e = new Error(`Unknown Babbage substrate: ${connection.substrate}`)
