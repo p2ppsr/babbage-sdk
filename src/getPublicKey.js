@@ -20,8 +20,9 @@ module.exports = async ({
   keyID,
   privileged = false,
   identityKey = false,
-  reason = 'No reason provided.',
-  counterparty = 'self'
+  counterparty = 'self',
+  forSelf = false,
+  reason = 'No reason provided.'
 }) => {
   const connection = await connectToSubstrate()
   if (connection.substrate === 'cicada-api') {
@@ -32,6 +33,7 @@ module.exports = async ({
         `&privileged=${encodeURIComponent(privileged)}` +
         `&identityKey=${encodeURIComponent(identityKey)}` +
         `&counterparty=${encodeURIComponent(counterparty)}` +
+        `&forSelf=${encodeURIComponent(forSelf)}` +
         `&reason=${encodeURIComponent(reason)}`,
       {
         method: 'get',
@@ -64,8 +66,9 @@ module.exports = async ({
           keyID,
           privileged,
           identityKey,
-          reason,
-          counterparty
+          counterparty,
+          forSelf,
+          reason
         }
       }, '*')
     })
@@ -75,8 +78,9 @@ module.exports = async ({
       keyID,
       privileged,
       identityKey,
-      reason,
-      counterparty
+      counterparty,
+      forSelf,
+      reason
     })
   } else {
     const e = new Error(`Unknown Babbage substrate: ${connection.substrate}`)
