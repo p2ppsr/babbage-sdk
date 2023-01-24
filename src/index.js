@@ -4,6 +4,7 @@ module.exports = {
   createSignature: require('./createSignature'),
   decrypt: require('./decrypt'),
   encrypt: require('./encrypt'),
+  getNetwork: require('./getNetwork'),
   getPublicKey: require('./getPublicKey'),
   getVersion: require('./getVersion'),
   isAuthenticated: require('./isAuthenticated'),
