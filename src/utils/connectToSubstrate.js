@@ -1,5 +1,6 @@
 const makeHttpRequest = require('./makeHttpRequest')
 const promiseWithTimeout = require('./promiseWithTimeout')
+const getRandomID = require('../utils/getRandomID')
 
 /**
  * Obtains the version by using the local window.CWI instance.
