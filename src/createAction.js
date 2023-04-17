@@ -9,6 +9,7 @@ const getRandomID = require('./utils/getRandomID')
  * @param {string} obj.description A present-tense description of the user Action being facilitated or represented by this BitCoin transaction.
  * @param {Array<String>} [obj.bridges=[]] Topics to notify about this Action.
  * @param {Array<String>} [obj.labels=[]] Labels to apply to this Action.
+ * @param {Boolean} [obj.dangerouslyDisableMapi=false] Disables returning mAPI responses with created transaction, dramatically improving performance while removing the ability of recipients to check for double-spends by checking mAPI signatures.
  * @returns {Promise<Object>} An Action object containing "txid", "rawTx" "mapiResponses" and "inputs".
  */
 module.exports = async ({
@@ -16,7 +17,8 @@ module.exports = async ({
   outputs,
   description,
   topics,
-  labels
+  labels,
+  dangerouslyDisableMapi
 }) => {
   const connection = await connectToSubstrate()
   if (connection.substrate === 'cicada-api') {
@@ -32,7 +34,8 @@ module.exports = async ({
           outputs,
           description,
           topics,
-          labels
+          labels,
+          dangerouslyDisableMapi
         })
       }
     )
@@ -60,7 +63,8 @@ module.exports = async ({
           outputs,
           description,
           topics,
-          labels
+          labels,
+          dangerouslyDisableMapi
         }
       }, '*')
     })
@@ -70,7 +74,8 @@ module.exports = async ({
       outputs,
       description,
       topics,
-      labels
+      labels,
+      dangerouslyDisableMapi
     })
   } else {
     const e = new Error(`Unknown Babbage substrate: ${connection.substrate}`)
