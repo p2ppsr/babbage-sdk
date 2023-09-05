@@ -134,12 +134,12 @@ await createAction({
 
 *   [createAction](#createaction)
     *   [Parameters](#parameters)
-*   [createHmac](#createhmac)
-    *   [Parameters](#parameters-1)
 *   [getWindowVersion](#getwindowversion)
 *   [getXDMVersion](#getxdmversion)
 *   [getHTTPVersion](#gethttpversion)
 *   [promiseWithTimeout](#promisewithtimeout)
+    *   [Parameters](#parameters-1)
+*   [createHmac](#createhmac)
     *   [Parameters](#parameters-2)
 *   [createSignature](#createsignature)
     *   [Parameters](#parameters-3)
@@ -167,6 +167,8 @@ await createAction({
     *   [Parameters](#parameters-12)
 *   [getTransactionOutputs](#gettransactionoutputs)
     *   [Parameters](#parameters-13)
+*   [listActions](#listactions)
+    *   [Parameters](#parameters-14)
 
 ### createAction
 
@@ -182,23 +184,6 @@ Creates and broadcasts a BitCoin transaction with the provided inputs and output
     *   `obj.dangerouslyDisableMapi` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Disables returning mAPI responses with created transaction, dramatically improving performance while removing the ability of recipients to check for double-spends by checking mAPI signatures. (optional, default `false`)
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** An Action object containing "txid", "rawTx" "mapiResponses" and "inputs".
-
-### createHmac
-
-Creates a SHA-256 HMAC with a key belonging to the user.
-
-#### Parameters
-
-*   `args` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters are passed in an object.
-
-    *   `args.data` **([Uint8Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array) | [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** The data to HMAC. If given as a string, it must be in base64 format.
-    *   `args.protocolID` **([Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) | [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** Specify an identifier for the protocol under which this operation is being performed.
-    *   `args.keyID` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** An identifier for the message. During verification, the same message ID will be required. This can be used to prevent key re-use, even when the same user is using the same protocol to HMAC multiple messages.
-    *   `args.description` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** Describe the high-level operation being performed, so that the user can make an informed decision if permission is needed. (optional, default `''`)
-    *   `args.counterparty` **([Uint8Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array) | [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** If specified, the user with this identity key will also be able to verify the HMAC, as long as they specify the current user's identity key as their counterparty. Must be a hexadecimal string representing a 33-byte or 65-byte value, "self" or "anyone". (optional, default `self`)
-    *   `args.privileged` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** This indicates whether the privileged keyring should be used for the HMAC, as opposed to the primary keyring. (optional, default `false`)
-
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Uint8Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array)>** The SHA-256 HMAC of the data.
 
 ### getWindowVersion
 
@@ -226,6 +211,23 @@ Provides a timedout promise.
     *   `obj.timeout` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Timeout in milliseconds, promise interupted, control returned, if not completed after `timeout` milliseconds.
     *   `obj.promise` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** The promised function to be run to completion or interupted, control returned, after `timeout` milliseconds.
     *   `obj.error` **[Error](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error)** The error that is thrown if the time expires.
+
+### createHmac
+
+Creates a SHA-256 HMAC with a key belonging to the user.
+
+#### Parameters
+
+*   `args` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters are passed in an object.
+
+    *   `args.data` **([Uint8Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array) | [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** The data to HMAC. If given as a string, it must be in base64 format.
+    *   `args.protocolID` **([Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) | [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** Specify an identifier for the protocol under which this operation is being performed.
+    *   `args.keyID` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** An identifier for the message. During verification, the same message ID will be required. This can be used to prevent key re-use, even when the same user is using the same protocol to HMAC multiple messages.
+    *   `args.description` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** Describe the high-level operation being performed, so that the user can make an informed decision if permission is needed. (optional, default `''`)
+    *   `args.counterparty` **([Uint8Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array) | [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** If specified, the user with this identity key will also be able to verify the HMAC, as long as they specify the current user's identity key as their counterparty. Must be a hexadecimal string representing a 33-byte or 65-byte value, "self" or "anyone". (optional, default `self`)
+    *   `args.privileged` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** This indicates whether the privileged keyring should be used for the HMAC, as opposed to the primary keyring. (optional, default `false`)
+
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Uint8Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array)>** The SHA-256 HMAC of the data.
 
 ### createSignature
 
@@ -436,6 +438,20 @@ Returns a set of transaction outputs that Dojo has tracked
     *   `obj.type` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** If provided, only outputs of the specified type will be returned. If not provided, outputs of all types will be returned.
     *   `obj.limit` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** Provide a limit on the number of outputs that will be returned. (optional, default `25`)
     *   `obj.offset` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** Provide an offset into the list of outputs. (optional, default `0`)
+
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<TransactionOutputDescriptor>>** A set of outputs that match the criteria
+
+### listActions
+
+Returns a list of Actions with a given label
+
+#### Parameters
+
+*   `obj` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters are given in an object
+
+    *   `obj.label` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The label for the transactions to return
+    *   `obj.limit` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Provide a limit on the number of outputs that will be returned. (optional, default `25`)
+    *   `obj.offset` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Provide an offset into the list of outputs. (optional, default `0`)
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<TransactionOutputDescriptor>>** A set of outputs that match the criteria
 
