@@ -169,6 +169,8 @@ await createAction({
     *   [Parameters](#parameters-13)
 *   [listActions](#listactions)
     *   [Parameters](#parameters-14)
+*   [revealKeyLinkage](#revealkeylinkage)
+    *   [Parameters](#parameters-15)
 
 ### createAction
 
@@ -454,6 +456,24 @@ Returns a list of Actions with a given label
     *   `obj.offset` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Provide an offset into the list of outputs. (optional, default `0`)
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<TransactionOutputDescriptor>>** A set of outputs that match the criteria
+
+### revealKeyLinkage
+
+Reveals the linkage between a key held by this user and a key held by another user. In one mode, reveals all keys associated with a counterparty, in the other mode reveals only the linkage of a specific interaction. Encrypts the linkage value so that only the specified verifier can access it. Refer to [BRC-72](https://brc.dev/72) for full details.
+
+#### Parameters
+
+*   `args` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters are passed in an object.
+
+    *   `args.mode` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** When "counterparty" it will reveal all keys for the counterparty. When "specific" it will reveal only the linkage for the specific protocolID and keyID provided
+    *   `args.counterparty` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The identity of the person who is associated with the linked key to reveal. Must be a hexadecimal string representing a 33-byte or 65-byte value.
+    *   `args.verifier` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The identity key of the person to whom this revelation is being made. The linkage will be encrypted so that only the verifier can access it.
+    *   `args.protocolID` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** BRC-43 Protocol ID under which the linkage is to be revealed
+    *   `args.keyID` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** BRC-43 Key ID under which the linkage is to be revealed
+    *   `args.description` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** Describe the high-level operation being performed, so that the user can make an informed decision if permission is needed.
+    *   `args.privileged` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** This indicates which keyring should be used. (optional, default `false`)
+
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** The revealed linkage payload, as described in [BRC-72](https://brc.dev/72).
 
 ## SDK Connection Substrates
 
