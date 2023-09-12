@@ -171,6 +171,7 @@ await createAction({
     *   [Parameters](#parameters-14)
 *   [revealKeyLinkage](#revealkeylinkage)
     *   [Parameters](#parameters-15)
+*   [requestGroupPermission](#requestgrouppermission)
 
 ### createAction
 
@@ -474,6 +475,12 @@ Reveals the linkage between a key held by this user and a key held by another us
     *   `args.privileged` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** This indicates which keyring should be used. (optional, default `false`)
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** The revealed linkage payload, as described in [BRC-72](https://brc.dev/72).
+
+### requestGroupPermission
+
+Requests group permissions for an application.
+
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<void>** Resolves after group permissions are completed by the user.
 
 ## SDK Connection Substrates
 

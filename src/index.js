@@ -17,5 +17,6 @@ module.exports = {
   submitDirectTransaction: require('./submitDirectTransaction'),
   getTransactionOutputs: require('./getTransactionOutputs'),
   listActions: require('./listActions'),
-  revealKeyLinkage: require('./revealKeyLinkage')
+  revealKeyLinkage: require('./revealKeyLinkage'),
+  requestGroupPermission: require('./requestGroupPermission')
 }
