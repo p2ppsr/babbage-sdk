@@ -134,14 +134,14 @@ await createAction({
 
 *   [createAction](#createaction)
     *   [Parameters](#parameters)
+*   [createHmac](#createhmac)
+    *   [Parameters](#parameters-1)
+*   [createSignature](#createsignature)
+    *   [Parameters](#parameters-2)
 *   [getWindowVersion](#getwindowversion)
 *   [getXDMVersion](#getxdmversion)
 *   [getHTTPVersion](#gethttpversion)
 *   [promiseWithTimeout](#promisewithtimeout)
-    *   [Parameters](#parameters-1)
-*   [createHmac](#createhmac)
-    *   [Parameters](#parameters-2)
-*   [createSignature](#createsignature)
     *   [Parameters](#parameters-3)
 *   [decrypt](#decrypt)
     *   [Parameters](#parameters-4)
@@ -181,39 +181,13 @@ Creates and broadcasts a BitCoin transaction with the provided inputs and output
 
 *   `obj` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters for this function are provided in an object
 
-    *   `obj.inputs` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Input scripts to spend as part of this Action. This is an object whose keys are TXIDs and whose values are Everett-style transaction envelopes that contain an additional field called `outputsToRedeen`. This additional field is an array of objects, each containing `index` and `unlockingScript` properties. The `index` property is the output number in the transaction you are spending, and `unlockingScript` is the hex-encoded Bitcoin script that unlocks and spends the output. Any signatures should be created with `SIGHASH_NONE | ANYONECANPAY` so that additional modifications to the resulting transaction can be made afterward without invalidating them. You may substitute `SIGHASH_NONE` for `SIGHASH_SINGLE` if required for a token contract, or drop `ANYONECANPAY` if you are self-funding the Action.
+    *   `obj.inputs` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Input scripts to spend as part of this Action. This is an object whose keys are TXIDs and whose values are [BRC-8](https://brc.dev/8) transaction envelopes that contain an additional field called `outputsToRedeen`. This additional field is an array of objects, each containing `index` and `unlockingScript` properties (with an optional `sequenceNumber`). The `index` property is the output number in the transaction you are spending, and `unlockingScript` is the hex-encoded Bitcoin script that unlocks and spends the output (the `sequenceNumber` is applied to the input). Any signatures should be created with `SIGHASH_NONE | ANYONECANPAY` so that additional modifications to the resulting transaction can be made afterward without invalidating them. You may substitute `SIGHASH_NONE` for `SIGHASH_SINGLE` if required for a token contract, or drop `ANYONECANPAY` if you are self-funding the Action and the outputs require no other funding inputs.
     *   `obj.outputs` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>?** The array of transaction outputs (amounts and scripts) that you want in the transaction. Each object contains "satoshis" and "script", which can be any custom locking script of your choosing.
+    *   `obj.lockTime` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** The lock time of the created transaction.
     *   `obj.description` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** A present-tense description of the user Action being facilitated or represented by this BitCoin transaction.
     *   `obj.dangerouslyDisableMapi` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Disables returning mAPI responses with created transaction, dramatically improving performance while removing the ability of recipients to check for double-spends by checking mAPI signatures. (optional, default `false`)
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** An Action object containing "txid", "rawTx" "mapiResponses" and "inputs".
-
-### getWindowVersion
-
-Obtains the version by using the local window.CWI instance.
-Fails of no CWI instance exists within the local window.
-
-### getXDMVersion
-
-Uses cross-document messaging to obtain a substrate connection.
-Fails after 200ms if no version response is received.
-
-### getHTTPVersion
-
-Uses the HTTP local port 3301 API to request the version.
-Fails if HTTP errors are encountered, or no server is running.
-
-### promiseWithTimeout
-
-Provides a timedout promise.
-
-#### Parameters
-
-*   `obj` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters for this function are provided in an object
-
-    *   `obj.timeout` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Timeout in milliseconds, promise interupted, control returned, if not completed after `timeout` milliseconds.
-    *   `obj.promise` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** The promised function to be run to completion or interupted, control returned, after `timeout` milliseconds.
-    *   `obj.error` **[Error](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error)** The error that is thrown if the time expires.
 
 ### createHmac
 
@@ -250,6 +224,33 @@ To allow other users to externally verify the signature, use getPublicKey with t
     *   `args.privileged` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** This indicates whether the privileged keyring should be used for signing, as opposed to the primary keyring. (optional, default `false`)
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Uint8Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array)>** The ECDSA message signature.
+
+### getWindowVersion
+
+Obtains the version by using the local window.CWI instance.
+Fails of no CWI instance exists within the local window.
+
+### getXDMVersion
+
+Uses cross-document messaging to obtain a substrate connection.
+Fails after 200ms if no version response is received.
+
+### getHTTPVersion
+
+Uses the HTTP local port 3301 API to request the version.
+Fails if HTTP errors are encountered, or no server is running.
+
+### promiseWithTimeout
+
+Provides a timedout promise.
+
+#### Parameters
+
+*   `obj` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters for this function are provided in an object
+
+    *   `obj.timeout` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Timeout in milliseconds, promise interupted, control returned, if not completed after `timeout` milliseconds.
+    *   `obj.promise` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** The promised function to be run to completion or interupted, control returned, after `timeout` milliseconds.
+    *   `obj.error` **[Error](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error)** The error that is thrown if the time expires.
 
 ### decrypt
 
