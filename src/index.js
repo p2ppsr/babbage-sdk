@@ -18,5 +18,6 @@ module.exports = {
   getTransactionOutputs: require('./getTransactionOutputs'),
   listActions: require('./listActions'),
   revealKeyLinkage: require('./revealKeyLinkage'),
-  requestGroupPermission: require('./requestGroupPermission')
+  requestGroupPermission: require('./requestGroupPermission'),
+  unbasketOutput: require('./unbasketOutput')
 }
