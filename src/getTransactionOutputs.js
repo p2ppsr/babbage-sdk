@@ -17,8 +17,12 @@ const getRandomID = require('./utils/getRandomID')
 module.exports = async ({
   basket,
   tracked,
-  includeEnvelope = false,
   spendable,
+  tags,
+  includeEnvelope = false,
+  includeBasket = false,
+  includeTags = false,
+  tagQueryMode,
   type,
   limit = 25,
   offset = 0
@@ -35,9 +39,13 @@ module.exports = async ({
         body: JSON.stringify({
           basket,
           tracked,
-          includeEnvelope,
           spendable,
+          tags,
           type,
+          includeEnvelope,
+          includeBasket,
+          includeTags,
+          tagQueryMode,
           limit,
           offset
         })
