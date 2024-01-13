@@ -7,8 +7,12 @@ const getRandomID = require('./utils/getRandomID')
  * @param {Object} obj All parameters are given in an object
  * @param {String} [obj.basket] If provided, indicates which basket the outputs should be selected from.
  * @param {Boolean} [obj.tracked] If provided, only outputs with the corresponding tracked value will be returned (true/false).
- * @param {Boolean} [obj.includeEnvelope] If provided, returns a structure with the SPV envelopes for the UTXOS that have not been spent.
  * @param {Boolean} [obj.spendable] If given as true or false, only outputs that have or have not (respectively) been spent will be returned. If not given, both spent and unspent outputs will be returned.
+ * @param {String[]} [obj.tags] If provided, only outputs that are tagged with one of the given tags will be returned (depending on the tagQueryMode which defaults to all).
+ * @param {Boolean} [obj.includeEnvelope] If provided, returns a structure with the SPV envelopes for the UTXOS that have not been spent.
+ * @param {Boolean} [obj.includeBasket] If provided, returns the basket a UTXO is a member of, or undefined if it is not in a basket.
+ * @param {Boolean} [obj.includeTags] If provided, returns one or more tags a UTXO is tagged with.
+ * @param {String} [obj.tagQueryMode] If provided, will return outputs that match either all the tags, or any of them.
  * @param {String} [obj.type] If provided, only outputs of the specified type will be returned. If not provided, outputs of all types will be returned.
  * @param {Number} [obj.limit] Provide a limit on the number of outputs that will be returned.
  * @param {Number} [obj.offset] Provide an offset into the list of outputs.
