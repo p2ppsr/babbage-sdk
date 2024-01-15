@@ -12,6 +12,7 @@ const getRandomID = require('./utils/getRandomID')
  * @param {Boolean} [obj.includeEnvelope] If provided, returns a structure with the SPV envelopes for the UTXOS that have not been spent.
  * @param {Boolean} [obj.includeBasket] If provided, returns the basket a UTXO is a member of, or undefined if it is not in a basket.
  * @param {Boolean} [obj.includeTags] If provided, returns one or more tags a UTXO is tagged with.
+ * @param {Boolean} [obj.includeCustomInstructions] If provided, returns custom instructions providing the necessary key derivation associated with one or more UTXOs.
  * @param {String} [obj.tagQueryMode] If provided, will return outputs that match either all the tags, or any of them.
  * @param {String} [obj.type] If provided, only outputs of the specified type will be returned. If not provided, outputs of all types will be returned.
  * @param {Number} [obj.limit] Provide a limit on the number of outputs that will be returned.
@@ -26,6 +27,7 @@ module.exports = async ({
   includeEnvelope = false,
   includeBasket = false,
   includeTags = false,
+  includeCustomInstructions = false,
   tagQueryMode,
   type,
   limit = 25,
@@ -49,6 +51,7 @@ module.exports = async ({
           includeEnvelope,
           includeBasket,
           includeTags,
+          includeCustomInstructions,
           tagQueryMode,
           limit,
           offset
@@ -77,9 +80,14 @@ module.exports = async ({
         params: {
           basket,
           tracked,
-          includeEnvelope,
           spendable,
+          tags,
           type,
+          includeEnvelope,
+          includeBasket,
+          includeTags,
+          includeCustomInstructions,
+          tagQueryMode,
           limit,
           offset
         }
@@ -89,9 +97,14 @@ module.exports = async ({
     return window.CWI.ninja.getTransactionOutputs({
       basket,
       tracked,
-      includeEnvelope,
       spendable,
+      tags,
       type,
+      includeEnvelope,
+      includeBasket,
+      includeTags,
+      includeCustomInstructions,
+      tagQueryMode,
       limit,
       offset
     })
