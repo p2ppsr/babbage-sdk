@@ -134,14 +134,14 @@ await createAction({
 
 *   [createAction](#createaction)
     *   [Parameters](#parameters)
-*   [createHmac](#createhmac)
-    *   [Parameters](#parameters-1)
-*   [createSignature](#createsignature)
-    *   [Parameters](#parameters-2)
 *   [getWindowVersion](#getwindowversion)
 *   [getXDMVersion](#getxdmversion)
 *   [getHTTPVersion](#gethttpversion)
 *   [promiseWithTimeout](#promisewithtimeout)
+    *   [Parameters](#parameters-1)
+*   [createHmac](#createhmac)
+    *   [Parameters](#parameters-2)
+*   [createSignature](#createsignature)
     *   [Parameters](#parameters-3)
 *   [decrypt](#decrypt)
     *   [Parameters](#parameters-4)
@@ -172,6 +172,12 @@ await createAction({
 *   [revealKeyLinkage](#revealkeylinkage)
     *   [Parameters](#parameters-15)
 *   [requestGroupPermission](#requestgrouppermission)
+*   [unbasketOutput](#unbasketoutput)
+    *   [Parameters](#parameters-16)
+*   [discoverByIdentityKey](#discoverbyidentitykey)
+    *   [Parameters](#parameters-17)
+*   [discoverByAttributes](#discoverbyattributes)
+    *   [Parameters](#parameters-18)
 
 ### createAction
 
@@ -188,6 +194,33 @@ Creates and broadcasts a BitCoin transaction with the provided inputs and output
     *   `obj.dangerouslyDisableMapi` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Disables returning mAPI responses with created transaction, dramatically improving performance while removing the ability of recipients to check for double-spends by checking mAPI signatures. (optional, default `false`)
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** An Action object containing "txid", "rawTx" "mapiResponses" and "inputs".
+
+### getWindowVersion
+
+Obtains the version by using the local window.CWI instance.
+Fails of no CWI instance exists within the local window.
+
+### getXDMVersion
+
+Uses cross-document messaging to obtain a substrate connection.
+Fails after 200ms if no version response is received.
+
+### getHTTPVersion
+
+Uses the HTTP local port 3301 API to request the version.
+Fails if HTTP errors are encountered, or no server is running.
+
+### promiseWithTimeout
+
+Provides a timedout promise.
+
+#### Parameters
+
+*   `obj` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters for this function are provided in an object
+
+    *   `obj.timeout` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Timeout in milliseconds, promise interupted, control returned, if not completed after `timeout` milliseconds.
+    *   `obj.promise` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** The promised function to be run to completion or interupted, control returned, after `timeout` milliseconds.
+    *   `obj.error` **[Error](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error)** The error that is thrown if the time expires.
 
 ### createHmac
 
@@ -224,33 +257,6 @@ To allow other users to externally verify the signature, use getPublicKey with t
     *   `args.privileged` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** This indicates whether the privileged keyring should be used for signing, as opposed to the primary keyring. (optional, default `false`)
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Uint8Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array)>** The ECDSA message signature.
-
-### getWindowVersion
-
-Obtains the version by using the local window.CWI instance.
-Fails of no CWI instance exists within the local window.
-
-### getXDMVersion
-
-Uses cross-document messaging to obtain a substrate connection.
-Fails after 200ms if no version response is received.
-
-### getHTTPVersion
-
-Uses the HTTP local port 3301 API to request the version.
-Fails if HTTP errors are encountered, or no server is running.
-
-### promiseWithTimeout
-
-Provides a timedout promise.
-
-#### Parameters
-
-*   `obj` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters for this function are provided in an object
-
-    *   `obj.timeout` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Timeout in milliseconds, promise interupted, control returned, if not completed after `timeout` milliseconds.
-    *   `obj.promise` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** The promised function to be run to completion or interupted, control returned, after `timeout` milliseconds.
-    *   `obj.error` **[Error](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error)** The error that is thrown if the time expires.
 
 ### decrypt
 
@@ -437,8 +443,13 @@ Returns a set of transaction outputs that Dojo has tracked
 
     *   `obj.basket` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** If provided, indicates which basket the outputs should be selected from.
     *   `obj.tracked` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** If provided, only outputs with the corresponding tracked value will be returned (true/false).
-    *   `obj.includeEnvelope` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** If provided, returns a structure with the SPV envelopes for the UTXOS that have not been spent. (optional, default `false`)
     *   `obj.spendable` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** If given as true or false, only outputs that have or have not (respectively) been spent will be returned. If not given, both spent and unspent outputs will be returned.
+    *   `obj.tags` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)<[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)>?** If provided, only outputs that are tagged with one of the given tags will be returned (depending on the tagQueryMode which defaults to all).
+    *   `obj.includeEnvelope` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** If provided, returns a structure with the SPV envelopes for the UTXOS that have not been spent. (optional, default `false`)
+    *   `obj.includeBasket` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** If provided, returns the basket a UTXO is a member of, or undefined if it is not in a basket. (optional, default `false`)
+    *   `obj.includeTags` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** If provided, returns one or more tags a UTXO is tagged with. (optional, default `false`)
+    *   `obj.includeCustomInstructions` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** If provided, returns custom instructions providing the necessary key derivation associated with one or more UTXOs. (optional, default `false`)
+    *   `obj.tagQueryMode` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** If provided, will return outputs that match either all the tags, or any of them.
     *   `obj.type` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** If provided, only outputs of the specified type will be returned. If not provided, outputs of all types will be returned.
     *   `obj.limit` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** Provide a limit on the number of outputs that will be returned. (optional, default `25`)
     *   `obj.offset` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** Provide an offset into the list of outputs. (optional, default `0`)
@@ -482,6 +493,50 @@ Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/
 Requests group permissions for an application.
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<void>** Resolves after group permissions are completed by the user.
+
+### unbasketOutput
+
+Returns a set of transaction outputs that Dojo has tracked
+
+#### Parameters
+
+*   `obj` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters are given in an object
+
+    *   `obj.basket` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** If provided, indicates which basket the outputs should be selected from.
+    *   `obj.tracked` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** If provided, only outputs with the corresponding tracked value will be returned (true/false).
+    *   `obj.includeEnvelope` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** If provided, returns a structure with the SPV envelopes for the UTXOS that have not been spent.
+    *   `obj.spendable` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** If given as true or false, only outputs that have or have not (respectively) been spent will be returned. If not given, both spent and unspent outputs will be returned.
+    *   `obj.type` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** If provided, only outputs of the specified type will be returned. If not provided, outputs of all types will be returned.
+    *   `obj.limit` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** Provide a limit on the number of outputs that will be returned.
+    *   `obj.offset` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** Provide an offset into the list of outputs.
+    *   `obj.txid` &#x20;
+    *   `obj.vout` &#x20;
+
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)\<TransactionOutputDescriptor>>** A set of outputs that match the criteria
+
+### discoverByIdentityKey
+
+Resolves identity information by identity key from the user's trusted certifiers.
+
+#### Parameters
+
+*   `obj` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters are provided in an object
+
+    *   `obj.identityKey` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The identity key to resolve information for
+
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>>**&#x20;
+
+### discoverByAttributes
+
+Resolves identity information by attributes from the user's trusted certifiers.
+
+#### Parameters
+
+*   `obj` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters are provided in an object
+
+    *   `obj.attributes` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** An object containing key value pairs to query for (ex. { firstName: 'Bob' } )
+
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>>**&#x20;
 
 ## SDK Connection Substrates
 
