@@ -8,6 +8,7 @@ const getRandomID = require('./utils/getRandomID')
  * @param {Array<Object>} [obj.outputs] The array of transaction outputs (amounts and scripts) that you want in the transaction. Each object contains "satoshis" and "script", which can be any custom locking script of your choosing.
  * @param {Number} [obj.lockTime] The lock time of the created transaction.
  * @param {string} obj.description A present-tense description of the user Action being facilitated or represented by this BitCoin transaction.
+ * @param {Array<String>} obj.labels An array of transaction labels to apply to the Action
  * @param {Boolean} [obj.dangerouslyDisableMapi=false] Disables returning mAPI responses with created transaction, dramatically improving performance while removing the ability of recipients to check for double-spends by checking mAPI signatures.
  * @returns {Promise<Object>} An Action object containing "txid", "rawTx" "mapiResponses" and "inputs".
  */
@@ -16,6 +17,7 @@ module.exports = async ({
   outputs,
   lockTime,
   description,
+  labels,
   dangerouslyDisableMapi
 }) => {
   const connection = await connectToSubstrate()
@@ -32,6 +34,7 @@ module.exports = async ({
           outputs,
           lockTime,
           description,
+          labels,
           dangerouslyDisableMapi
         })
       }
@@ -60,6 +63,7 @@ module.exports = async ({
           outputs,
           lockTime,
           description,
+          labels,
           dangerouslyDisableMapi
         }
       }, '*')
@@ -70,6 +74,7 @@ module.exports = async ({
       outputs,
       lockTime,
       description,
+      labels,
       dangerouslyDisableMapi
     })
   } else {
