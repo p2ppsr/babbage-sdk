@@ -20,5 +20,6 @@ module.exports = {
   revealKeyLinkage: require('./revealKeyLinkage'),
   requestGroupPermission: require('./requestGroupPermission'),
   unbasketOutput: require('./unbasketOutput'),
-  discoverByIdentityKey: require('./discoverByIdentityKey')
+  discoverByIdentityKey: require('./discoverByIdentityKey'),
+  discoverByAttributes: require('./discoverByAttributes')
 }

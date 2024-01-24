@@ -3,24 +3,24 @@ const makeHttpRequest = require('./utils/makeHttpRequest')
 const getRandomID = require('./utils/getRandomID')
 
 /**
- * Resolves identity information by identity key from the user's trusted certifiers.
+ * Resolves identity information by attributes from the user's trusted certifiers.
  * @param {Object} obj All parameters are provided in an object
- * @param {String} obj.identityKey The identity key to resolve information for
+ * @param {Object} obj.attributes An object containing key value pairs to query for (ex. { firstName: 'Bob' } )
  * @returns {Promise<Object[]>}
  */
 module.exports = async ({
-  identityKey
+  attributes
 }) => {
   const connection = await connectToSubstrate()
   if (connection.substrate === 'cicada-api') {
     const httpResult = await makeHttpRequest(
-      'http://localhost:3301/v1/discoverByIdentityKey' +
-        `?identityKey=${encodeURIComponent(identityKey)}`,
+      'http://localhost:3301/v1/discoverByAttributes',
       {
-        method: 'get',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({ attributes })
       }
     )
     return httpResult
@@ -41,15 +41,15 @@ module.exports = async ({
         type: 'CWI',
         isInvocation: true,
         id,
-        call: 'discoverByIdentityKey',
+        call: 'discoverByAttributes',
         params: {
-          identityKey
+          attributes
         }
       }, '*')
     })
   } else if (connection.substrate === 'window-api') {
-    return window.CWI.discoverByIdentityKey({
-      identityKey
+    return window.CWI.discoverByAttributes({
+      attributes
     })
   } else {
     const e = new Error(`Unknown Babbage substrate: ${connection.substrate}`)
