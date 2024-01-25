@@ -8,12 +8,18 @@ const getRandomID = require('./utils/getRandomID')
  * @param {String} obj.label The label for the transactions to return
  * @param {Number} [obj.limit=25] Provide a limit on the number of outputs that will be returned.
  * @param {Number} [obj.offset=0] Provide an offset into the list of outputs.
+ * @param {Boolean} [obj.addInputsAndOutputs] Optional. If true, include the list of transaction inputs and outputs when retrieving transactions. Enabling this option adds the 'inputs' and 'outputs' properties to each transaction, providing detailed information about the transaction's inputs and outputs.
+ * @param {Boolean} [obj.includeBasket] Optional. If true, the basket for each input and output will be included.
+ * @param {Boolean} [obj.includeTags] Optional. If true, the tags on each input and output will be included.
  * @returns {Promise<Array<TransactionOutputDescriptor>>} A set of outputs that match the criteria
  */
 module.exports = async ({
   label,
   limit = 25,
-  offset = 0
+  offset = 0,
+  addInputsAndOutputs = false,
+  includeBasket = false,
+  includeTags = false
 }) => {
   const connection = await connectToSubstrate()
   if (connection.substrate === 'cicada-api') {
@@ -27,7 +33,10 @@ module.exports = async ({
         body: JSON.stringify({
           label,
           limit,
-          offset
+          offset,
+          addInputsAndOutputs,
+          includeBasket,
+          includeTags
         })
       }
     )
@@ -53,7 +62,10 @@ module.exports = async ({
         params: {
           label,
           limit,
-          offset
+          offset,
+          addInputsAndOutputs,
+          includeBasket,
+          includeTags
         }
       }, '*')
     })
@@ -61,7 +73,10 @@ module.exports = async ({
     return window.CWI.ninja.getTransactions({
       label,
       limit,
-      offset
+      offset,
+      addInputsAndOutputs,
+      includeBasket,
+      includeTags
     })
   } else {
     const e = new Error(`Unknown Babbage substrate: ${connection.substrate}`)
