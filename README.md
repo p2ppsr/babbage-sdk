@@ -134,14 +134,14 @@ await createAction({
 
 *   [createAction](#createaction)
     *   [Parameters](#parameters)
+*   [createHmac](#createhmac)
+    *   [Parameters](#parameters-1)
+*   [createSignature](#createsignature)
+    *   [Parameters](#parameters-2)
 *   [getWindowVersion](#getwindowversion)
 *   [getXDMVersion](#getxdmversion)
 *   [getHTTPVersion](#gethttpversion)
 *   [promiseWithTimeout](#promisewithtimeout)
-    *   [Parameters](#parameters-1)
-*   [createHmac](#createhmac)
-    *   [Parameters](#parameters-2)
-*   [createSignature](#createsignature)
     *   [Parameters](#parameters-3)
 *   [decrypt](#decrypt)
     *   [Parameters](#parameters-4)
@@ -192,33 +192,6 @@ Creates and broadcasts a BitCoin transaction with the provided inputs and output
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** An Action object containing "txid", "rawTx" "mapiResponses" and "inputs".
 
-### getWindowVersion
-
-Obtains the version by using the local window.CWI instance.
-Fails of no CWI instance exists within the local window.
-
-### getXDMVersion
-
-Uses cross-document messaging to obtain a substrate connection.
-Fails after 200ms if no version response is received.
-
-### getHTTPVersion
-
-Uses the HTTP local port 3301 API to request the version.
-Fails if HTTP errors are encountered, or no server is running.
-
-### promiseWithTimeout
-
-Provides a timedout promise.
-
-#### Parameters
-
-*   `obj` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters for this function are provided in an object
-
-    *   `obj.timeout` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Timeout in milliseconds, promise interupted, control returned, if not completed after `timeout` milliseconds.
-    *   `obj.promise` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** The promised function to be run to completion or interupted, control returned, after `timeout` milliseconds.
-    *   `obj.error` **[Error](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error)** The error that is thrown if the time expires.
-
 ### createHmac
 
 Creates a SHA-256 HMAC with a key belonging to the user.
@@ -254,6 +227,33 @@ To allow other users to externally verify the signature, use getPublicKey with t
     *   `args.privileged` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** This indicates whether the privileged keyring should be used for signing, as opposed to the primary keyring. (optional, default `false`)
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Uint8Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array)>** The ECDSA message signature.
+
+### getWindowVersion
+
+Obtains the version by using the local window.CWI instance.
+Fails of no CWI instance exists within the local window.
+
+### getXDMVersion
+
+Uses cross-document messaging to obtain a substrate connection.
+Fails after 200ms if no version response is received.
+
+### getHTTPVersion
+
+Uses the HTTP local port 3301 API to request the version.
+Fails if HTTP errors are encountered, or no server is running.
+
+### promiseWithTimeout
+
+Provides a timedout promise.
+
+#### Parameters
+
+*   `obj` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** All parameters for this function are provided in an object
+
+    *   `obj.timeout` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Timeout in milliseconds, promise interupted, control returned, if not completed after `timeout` milliseconds.
+    *   `obj.promise` **[Function](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function)** The promised function to be run to completion or interupted, control returned, after `timeout` milliseconds.
+    *   `obj.error` **[Error](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error)** The error that is thrown if the time expires.
 
 ### decrypt
 
@@ -426,6 +426,7 @@ Submits a transaction directly to a ninja
     *   `obj.senderIdentityKey` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Provide the identity key for the person who sent the transaction
     *   `obj.note` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Human-readable description for the transaction
     *   `obj.amount` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Amount of satoshis associated with the transaction
+    *   `obj.labels` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)<[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)>?** Labels to apply to the submitted transaction
     *   `obj.derivationPrefix` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** A derivation prefix used for all outputs. If provided, derivation prefixes on all outputs are optional.
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)>** Object containing reference number, status=success, and human-readable note acknowledging the transaction

@@ -11,6 +11,7 @@ const getRandomID = require('./utils/getRandomID')
  * @param {string} obj.note Human-readable description for the transaction
  * @param {Number} obj.amount Amount of satoshis associated with the transaction
  * @param {string} [obj.derivationPrefix] A derivation prefix used for all outputs. If provided, derivation prefixes on all outputs are optional.
+ * @param {Array<String>} [obj.labels] Labels to apply to the submitted transaction
  * @returns {Promise<Object>} Object containing reference number, status=success, and human-readable note acknowledging the transaction
  */
 module.exports = async ({
@@ -19,6 +20,7 @@ module.exports = async ({
   senderIdentityKey,
   note,
   amount,
+  labels,
   derivationPrefix
 }) => {
   const connection = await connectToSubstrate()
@@ -36,6 +38,7 @@ module.exports = async ({
           senderIdentityKey,
           note,
           amount,
+          labels,
           derivationPrefix
         })
       }
@@ -65,6 +68,7 @@ module.exports = async ({
           senderIdentityKey,
           note,
           amount,
+          labels,
           derivationPrefix
         }
       }, '*')
@@ -76,6 +80,7 @@ module.exports = async ({
       senderIdentityKey,
       note,
       amount,
+      labels,
       derivationPrefix
     })
   } else {
