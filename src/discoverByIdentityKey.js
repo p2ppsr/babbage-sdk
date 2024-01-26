@@ -6,16 +6,19 @@ const getRandomID = require('./utils/getRandomID')
  * Resolves identity information by identity key from the user's trusted certifiers.
  * @param {Object} obj All parameters are provided in an object
  * @param {String} obj.identityKey The identity key to resolve information for
+ * @param {string} [obj.description] Describe the high-level operation being performed, so that the user can make an informed decision if permission is needed.
  * @returns {Promise<Object[]>}
  */
 module.exports = async ({
-  identityKey
+  identityKey,
+  description
 }) => {
   const connection = await connectToSubstrate()
   if (connection.substrate === 'cicada-api') {
     const httpResult = await makeHttpRequest(
       'http://localhost:3301/v1/discoverByIdentityKey' +
-        `?identityKey=${encodeURIComponent(identityKey)}`,
+        `?identityKey=${encodeURIComponent(identityKey)}` +
+        `&description=${encodeURIComponent(description)}`,
       {
         method: 'get',
         headers: {
@@ -43,13 +46,15 @@ module.exports = async ({
         id,
         call: 'discoverByIdentityKey',
         params: {
-          identityKey
+          identityKey,
+          description
         }
       }, '*')
     })
   } else if (connection.substrate === 'window-api') {
     return window.CWI.discoverByIdentityKey({
-      identityKey
+      identityKey,
+      description
     })
   } else {
     const e = new Error(`Unknown Babbage substrate: ${connection.substrate}`)

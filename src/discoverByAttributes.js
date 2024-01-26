@@ -6,10 +6,12 @@ const getRandomID = require('./utils/getRandomID')
  * Resolves identity information by attributes from the user's trusted certifiers.
  * @param {Object} obj All parameters are provided in an object
  * @param {Object} obj.attributes An object containing key value pairs to query for (ex. { firstName: 'Bob' } )
+ * @param {string} [obj.description] Describe the high-level operation being performed, so that the user can make an informed decision if permission is needed.
  * @returns {Promise<Object[]>}
  */
 module.exports = async ({
-  attributes
+  attributes,
+  description
 }) => {
   const connection = await connectToSubstrate()
   if (connection.substrate === 'cicada-api') {
@@ -20,7 +22,7 @@ module.exports = async ({
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ attributes })
+        body: JSON.stringify({ attributes, description })
       }
     )
     return httpResult
@@ -43,13 +45,15 @@ module.exports = async ({
         id,
         call: 'discoverByAttributes',
         params: {
-          attributes
+          attributes,
+          description
         }
       }, '*')
     })
   } else if (connection.substrate === 'window-api') {
     return window.CWI.discoverByAttributes({
-      attributes
+      attributes,
+      description
     })
   } else {
     const e = new Error(`Unknown Babbage substrate: ${connection.substrate}`)
