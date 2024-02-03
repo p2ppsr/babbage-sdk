@@ -9,7 +9,10 @@ const getRandomID = require('./utils/getRandomID')
  * @param {Number} [obj.lockTime] The lock time of the created transaction.
  * @param {string} obj.description A present-tense description of the user Action being facilitated or represented by this BitCoin transaction.
  * @param {Array<String>} obj.labels An array of transaction labels to apply to the Action
- * @param {Boolean} [obj.dangerouslyDisableMapi=false] Disables returning mAPI responses with created transaction, dramatically improving performance while removing the ability of recipients to check for double-spends by checking mAPI signatures.
+ * @param {Boolean} [obj.acceptDelayedBroadcast=true] If true, self-signs initial validation response, watchman handles broadcast and proof verification.
+ * Outputs are immediately available to following transactions using the same mode.
+ * If false, waits for broadcast to transaction processing network response. Throws an error if not accepted by at least one processor.
+ * Recommended mode for situations in which a double spend is possible.
  * @returns {Promise<Object>} An Action object containing "txid", "rawTx" "mapiResponses" and "inputs".
  */
 module.exports = async ({
@@ -18,8 +21,9 @@ module.exports = async ({
   lockTime,
   description,
   labels,
-  dangerouslyDisableMapi
+  acceptDelayedBroadcast
 }) => {
+  acceptDelayedBroadcast ||= true
   const connection = await connectToSubstrate()
   if (connection.substrate === 'cicada-api') {
     const httpResult = await makeHttpRequest(
@@ -35,7 +39,7 @@ module.exports = async ({
           lockTime,
           description,
           labels,
-          dangerouslyDisableMapi
+          acceptDelayedBroadcast
         })
       }
     )
@@ -64,7 +68,7 @@ module.exports = async ({
           lockTime,
           description,
           labels,
-          dangerouslyDisableMapi
+          acceptDelayedBroadcast
         }
       }, '*')
     })
@@ -75,7 +79,7 @@ module.exports = async ({
       lockTime,
       description,
       labels,
-      dangerouslyDisableMapi
+      acceptDelayedBroadcast
     })
   } else {
     const e = new Error(`Unknown Babbage substrate: ${connection.substrate}`)
