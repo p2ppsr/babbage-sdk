@@ -21,9 +21,8 @@ module.exports = async ({
   lockTime,
   description,
   labels,
-  acceptDelayedBroadcast
+  acceptDelayedBroadcast = true
 }) => {
-  acceptDelayedBroadcast ||= true
   const connection = await connectToSubstrate()
   if (connection.substrate === 'cicada-api') {
     const httpResult = await makeHttpRequest(
