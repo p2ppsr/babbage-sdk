@@ -1,6 +1,7 @@
 const connectToSubstrate = require('./utils/connectToSubstrate')
 const makeHttpRequest = require('./utils/makeHttpRequest')
 const getRandomID = require('./utils/getRandomID')
+const stampLog = require('./utils/stampLog')
 
 /** Creates and broadcasts a BitCoin transaction with the provided inputs and outputs.
  * @param {Object} obj All parameters for this function are provided in an object
@@ -21,8 +22,10 @@ module.exports = async ({
   lockTime,
   description,
   labels,
-  acceptDelayedBroadcast = true
+  acceptDelayedBroadcast = true,
+  log = undefined
 }) => {
+  log = stampLog(log, 'start sdk createTransaction')
   const connection = await connectToSubstrate()
   if (connection.substrate === 'cicada-api') {
     const httpResult = await makeHttpRequest(
@@ -38,10 +41,12 @@ module.exports = async ({
           lockTime,
           description,
           labels,
-          acceptDelayedBroadcast
+          acceptDelayedBroadcast,
+          log
         })
       }
     )
+    httpResult.log = stampLog(httpResult.log, 'end sdk createTransaction')
     return httpResult
   } else if (connection.substrate === 'babbage-xdm') {
     return new Promise((resolve, reject) => {
@@ -67,7 +72,8 @@ module.exports = async ({
           lockTime,
           description,
           labels,
-          acceptDelayedBroadcast
+          acceptDelayedBroadcast,
+          log
         }
       }, '*')
     })
@@ -78,7 +84,8 @@ module.exports = async ({
       lockTime,
       description,
       labels,
-      acceptDelayedBroadcast
+      acceptDelayedBroadcast,
+      log
     })
   } else {
     const e = new Error(`Unknown Babbage substrate: ${connection.substrate}`)
