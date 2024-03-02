@@ -128,10 +128,10 @@ const communicator = async () => {
   }
 
   // Check the kernel's compatibility before resolving
-  if (!version.startsWith('0.3.')) {
-    const e = new Error(`Your MetaNet portal is running an incompatible kernel version ${version} This SDK requires a 0.3.x kernel`)
+  if (!version.startsWith('0.4.')) {
+    const e = new Error(`Your MetaNet portal is running an incompatible kernel version ${version} This SDK requires a 0.4.x kernel`)
     e.code = 'ERR_INCOMPATIBLE_KERNEL'
-    e.compatibleKernels = '0.3.x'
+    e.compatibleKernels = '0.4.x'
     e.invalidVersion = version
     throw e
   }
