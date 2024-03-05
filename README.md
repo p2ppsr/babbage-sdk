@@ -1,14 +1,22 @@
 # @babbage/sdk
 
-Build Babbage apps in JavaScript
+**This package has been deprecated.**
 
-**[NPM Package](https://www.npmjs.com/package/@babbage/sdk)**
+To build Babbage apps in Typescript or JavaScript please use:
 
-**[GitHub Repository](https://github.com/p2ppsr/babbage-sdk)**
+**[New Typescript or Javascript NPM Package](https://www.npmjs.com/package/@babbage/sdk-ts)**
+
+**[New Typescript or Javascript GitHub Repository](https://github.com/p2ppsr/babbage-sdk-ts)**
 
 ## Installation
 
+**This package has been deprecated.**
+
     npm i @babbage/sdk
+
+Please use this package instead.
+
+    npm i @babbage/sdk-ts
 
 ## By Example
 
@@ -132,52 +140,63 @@ await createAction({
 
 #### Table of Contents
 
-*   [createAction](#createaction)
-    *   [Parameters](#parameters)
-*   [createHmac](#createhmac)
-    *   [Parameters](#parameters-1)
-*   [getWindowVersion](#getwindowversion)
-*   [getXDMVersion](#getxdmversion)
-*   [getHTTPVersion](#gethttpversion)
-*   [promiseWithTimeout](#promisewithtimeout)
-    *   [Parameters](#parameters-2)
-*   [createSignature](#createsignature)
-    *   [Parameters](#parameters-3)
-*   [decrypt](#decrypt)
-    *   [Parameters](#parameters-4)
-*   [encrypt](#encrypt)
-    *   [Parameters](#parameters-5)
-*   [getNetwork](#getnetwork)
-*   [getPublicKey](#getpublickey)
-    *   [Parameters](#parameters-6)
-*   [getVersion](#getversion)
-*   [isAuthenticated](#isauthenticated)
-*   [verifyHmac](#verifyhmac)
-    *   [Parameters](#parameters-7)
-*   [verifySignature](#verifysignature)
-    *   [Parameters](#parameters-8)
-*   [waitForAuthentication](#waitforauthentication)
-*   [createCertificate](#createcertificate)
-    *   [Parameters](#parameters-9)
-*   [getCertificates](#getcertificates)
-    *   [Parameters](#parameters-10)
-*   [proveCertificate](#provecertificate)
-    *   [Parameters](#parameters-11)
-*   [submitDirectTransaction](#submitdirecttransaction)
-    *   [Parameters](#parameters-12)
-*   [getTransactionOutputs](#gettransactionoutputs)
-    *   [Parameters](#parameters-13)
-*   [listActions](#listactions)
-    *   [Parameters](#parameters-14)
-*   [revealKeyLinkage](#revealkeylinkage)
-    *   [Parameters](#parameters-15)
-*   [requestGroupPermission](#requestgrouppermission)
-*   [unbasketOutput](#unbasketoutput)
-    *   [Parameters](#parameters-16)
-*   [discoverByIdentityKey](#discoverbyidentitykey)
-    *   [Parameters](#parameters-17)
-*   [discoverByAttributes](#discoverbyattributes)
-    *   [Parameters](#parameters-18)
+- [@babbage/sdk](#babbagesdk)
+  - [Installation](#installation)
+  - [By Example](#by-example)
+  - [Documentation](#documentation)
+  - [Example Usage](#example-usage)
+    - [Encryption](#encryption)
+    - [Creating and Redeeming Bitcoin tokens](#creating-and-redeeming-bitcoin-tokens)
+  - [API](#api)
+      - [Table of Contents](#table-of-contents)
+    - [createAction](#createaction)
+      - [Parameters](#parameters)
+    - [createHmac](#createhmac)
+      - [Parameters](#parameters-1)
+    - [getWindowVersion](#getwindowversion)
+    - [getXDMVersion](#getxdmversion)
+    - [getHTTPVersion](#gethttpversion)
+    - [promiseWithTimeout](#promisewithtimeout)
+      - [Parameters](#parameters-2)
+    - [createSignature](#createsignature)
+      - [Parameters](#parameters-3)
+    - [decrypt](#decrypt)
+      - [Parameters](#parameters-4)
+    - [encrypt](#encrypt)
+      - [Parameters](#parameters-5)
+    - [getNetwork](#getnetwork)
+    - [getPublicKey](#getpublickey)
+      - [Parameters](#parameters-6)
+    - [getVersion](#getversion)
+    - [isAuthenticated](#isauthenticated)
+    - [verifyHmac](#verifyhmac)
+      - [Parameters](#parameters-7)
+    - [verifySignature](#verifysignature)
+      - [Parameters](#parameters-8)
+    - [waitForAuthentication](#waitforauthentication)
+    - [createCertificate](#createcertificate)
+      - [Parameters](#parameters-9)
+    - [getCertificates](#getcertificates)
+      - [Parameters](#parameters-10)
+    - [proveCertificate](#provecertificate)
+      - [Parameters](#parameters-11)
+    - [submitDirectTransaction](#submitdirecttransaction)
+      - [Parameters](#parameters-12)
+    - [getTransactionOutputs](#gettransactionoutputs)
+      - [Parameters](#parameters-13)
+    - [listActions](#listactions)
+      - [Parameters](#parameters-14)
+    - [revealKeyLinkage](#revealkeylinkage)
+      - [Parameters](#parameters-15)
+    - [requestGroupPermission](#requestgrouppermission)
+    - [unbasketOutput](#unbasketoutput)
+      - [Parameters](#parameters-16)
+    - [discoverByIdentityKey](#discoverbyidentitykey)
+      - [Parameters](#parameters-17)
+    - [discoverByAttributes](#discoverbyattributes)
+      - [Parameters](#parameters-18)
+  - [SDK Connection Substrates](#sdk-connection-substrates)
+  - [License](#license)
 
 ### createAction
 
