@@ -1,6 +1,6 @@
 {
   "name": "@babbage/sdk",
-  "version": "0.5.0",
+  "version": "0.4.48",
   "description": "Build Babbage Apps with JavaScript",
   "main": "src/index.js",
   "repository": {
